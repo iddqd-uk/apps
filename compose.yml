@@ -1,6 +1,29 @@
 # yaml-language-server: $schema=https://cdn.jsdelivr.net/gh/compose-spec/compose-spec@master/schema/compose-spec.json
 
 services:
+  traefik:
+    image: docker.io/library/traefik:v3.2
+    command:
+      #- --log.level=DEBUG
+      - --api.dashboard=true # activate dashboard
+      - --api.insecure=true # enable the API in insecure mode
+      - --providers.docker=true # enable Docker backend with default settings
+      - --providers.docker.exposedbydefault=false # do not expose containers by default
+      - --entrypoints.web.address=:80 # --entrypoints.<name>.address for ports, 80 (i.e., name = web)
+    ports:
+      - "80:80/tcp" # HTTP (web)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    labels:
+      traefik.enable: true
+      # dashboard
+      traefik.http.routers.traefik.rule: Host(`traefik.localtest.me`)
+      traefik.http.routers.traefik.service: api@internal
+      traefik.http.routers.traefik.entrypoints: web
+      traefik.http.routers.traefik.middlewares: error-pages-middleware
+    depends_on:
+      error-pages: {condition: service_healthy}
+
   whoami:
     image: docker.io/containous/whoami:latest
     command: --port 8080
