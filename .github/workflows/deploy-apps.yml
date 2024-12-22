@@ -17,9 +17,33 @@ jobs:
     environment: Production
     steps:
       - uses: actions/checkout@v4
-      - run: echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-      - run: echo -e "\nHost ${{ vars.SSH_HOST }}\n  IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config
-      - run: ssh-keyscan ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
-      - run: docker context create remote --docker "host=ssh://${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ secrets.SSH_PORT }}"
-      - run: docker context use remote
-      - run: docker ps && docker info
+
+      - name: Create SSH key
+        run: mkdir -p ~/.ssh && echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+      - name: Add SSH key to the agent
+        run: echo -e "\nHost ${{ secrets.SSH_HOST }}\n  IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config
+      - name: Add SSH key to known hosts
+        run: ssh-keyscan -p ${{ secrets.SSH_PORT }} -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create the Docker context
+        run: docker context create remote --docker "host=ssh://${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.SSH_PORT }}"
+      - name: Set the Docker context as default
+        run: docker context use remote
+
+      - name: Log in to Docker Hub (to prevent rate limiting issues)
+        run: |
+          ssh -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} \
+            "echo '${{ secrets.DOCKER_HUB_TOKEN }}' | docker login --username ${{ secrets.DOCKER_HUB_LOGIN }} docker.io --password-stdin"
+
+      - name: Pull the latest images
+        run: docker compose pull --policy=always
+      - name: Gracefully stop the services
+        run: docker compose down --remove-orphans
+      - name: Remove unused local volumes
+        run: docker volume prune --force
+      - name: Start the services
+        run: docker compose up --detach --wait
+
+      - name: Remove the sensitive data
+        if: always()
+        run: rm -rf ~/.ssh
