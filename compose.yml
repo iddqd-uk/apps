@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://cdn.jsdelivr.net/gh/compose-spec/compose-spec@master/schema/compose-spec.json
+
+services:
+  whoami:
+    image: docker.io/containous/whoami:latest
+    command: --port 8080
+    scale: 2
+    security_opt: [no-new-privileges:true]

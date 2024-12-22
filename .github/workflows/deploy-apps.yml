@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 🚀 Deploy the apps
+
+on:
+  workflow_dispatch: {} # manual trigger only
+
+concurrency:
+  group: ${{ github.ref }}-apps
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy the apps
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "${{ secrets.SSH_DEPLOY_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
+      - run: echo -e "\nHost ${{ vars.SSH_HOST }}\n  IdentityFile ~/.ssh/id_rsa\n" >> ~/.ssh/config
+      - run: ssh-keyscan ${{ vars.SSH_HOST }} >> ~/.ssh/known_hosts
+      - run: docker context create remote --docker "host=ssh://${{ vars.SSH_USER }}@${{ vars.SSH_HOST }}:${{ secrets.SSH_PORT }}"
+      - run: docker context use remote
+      - run: docker ps && docker info
