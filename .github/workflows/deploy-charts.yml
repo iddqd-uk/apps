@@ -5,7 +5,6 @@ name: 🚀 Deploy the charts
 
 on:
   workflow_dispatch: {} # manual trigger only
-  push: {branches: [apps]} # TODO: remove this line
 
 concurrency:
   group: ${{ github.ref }}-charts

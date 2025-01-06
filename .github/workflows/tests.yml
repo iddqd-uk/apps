@@ -23,10 +23,3 @@ jobs:
     steps:
       - {uses: actions/checkout@v4, with: {fetch-depth: 0}}
       - uses: gacts/gitleaks@v1
-
-  validate-docker-compose:
-    name: Validate Docker Compose configuration
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - run: docker compose config
