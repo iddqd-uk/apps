@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 🚀 Deploy the charts
+
+on:
+  workflow_dispatch: {} # manual trigger only
+
+concurrency:
+  group: ${{ github.ref }}-charts
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy the apps
+    runs-on: ubuntu-latest
+    environment: Production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4
+      - run: for chart in ./charts/*; do helm dependency update $chart; done
+
+#      - run: |
+#          for chart in charts/*; do
+#            name=$(basename $chart)
+#            helm dependency update $chart
+#            helm upgrade --install $name $chart
+#          done
