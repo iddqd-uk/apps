@@ -31,8 +31,15 @@ jobs:
       - name: Install Helm dependencies
         run: for chart in ./charts/*; do helm dependency update $chart; done
 
-      - name: Deploy the charts
-        run: for chart in ./charts/*; do helm upgrade --install $(basename $chart) $chart; done
+      - name: Deploy all the charts
+        run: |
+          for chart in ./charts/*; do
+            helm upgrade \
+              --atomic \
+              --create-namespace \
+              --install \
+                $(basename $chart) $chart;
+          done
 
       - name: Cleanup
         if: always()

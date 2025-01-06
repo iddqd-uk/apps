@@ -6,7 +6,7 @@ description: A Helm chart for Doppler secrets operator
 
 version: 0.1.0
 icon: https://avatars.githubusercontent.com/u/34022344
-sources: [https://docs.doppler.com/docs/kubernetes-operator]
+sources: [https://docs.doppler.com/docs/kubernetes-operator, https://github.com/DopplerHQ/kubernetes-operator]
 
 dependencies:
   - name: doppler-kubernetes-operator
