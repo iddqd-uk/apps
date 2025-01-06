@@ -17,10 +17,14 @@ jobs:
     environment: Production
     steps:
       - uses: actions/checkout@v4
+      - uses: azure/setup-kubectl@v4
+      - name: Create kubectl config file
+        run: mkdir ~/.kube && echo ${{ secrets.KUBE_CONFIG_BASE64 }} | base64 -d > ~/.kube/config
       - uses: azure/setup-helm@v4
       - name: Install Helm dependencies
         run: for chart in ./charts/*; do helm dependency update $chart; done
-
+      - run: kubectl get nodes
+      - {if: always(), run: rm ~/.kube/config}
 #      - run: |
 #          for chart in charts/*; do
 #            name=$(basename $chart)
