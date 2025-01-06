@@ -20,7 +20,10 @@ jobs:
 
       - uses: azure/setup-kubectl@v4
       - name: Create kubectl config file
-        run: mkdir ~/.kube && echo ${{ secrets.KUBE_CONFIG_BASE64 }} | base64 -d > ~/.kube/config
+        run: |
+          mkdir ~/.kube
+          echo ${{ secrets.KUBE_CONFIG_BASE64 }} | base64 -d > ~/.kube/config
+          chmod 400 ~/.kube/config
       - name: Check connection to the cluster
         run: kubectl get nodes
 
