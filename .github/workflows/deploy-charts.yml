@@ -30,7 +30,6 @@ jobs:
 
       - name: Deploy the charts
         run: for chart in ./charts/*; do helm upgrade --install $(basename $chart) $chart; done
-        env: {KUBECONFIG: ~/.kube/config}
 
       - name: Cleanup
         if: always()
