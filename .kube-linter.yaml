@@ -1,0 +1,8 @@
+# docs: https://docs.kubelinter.io/#/configuring-kubelinter
+
+checks:
+  ignorePaths:
+    - '**/charts/**' # 3rd-party charts
+  exclude:
+    - no-anti-affinity
+    - no-read-only-root-fs

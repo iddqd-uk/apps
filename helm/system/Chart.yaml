@@ -1,0 +1,16 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+
+apiVersion: v2
+name: system
+description: A Helm chart for all the system components
+
+version: 0.1.0
+icon: https://avatars.githubusercontent.com/u/110490746
+
+dependencies:
+  - name: traefik
+    version: 34.1.0
+    repository: https://helm.traefik.io/traefik
+  - name: external-secrets
+    version: 0.13.0
+    repository: https://charts.external-secrets.io

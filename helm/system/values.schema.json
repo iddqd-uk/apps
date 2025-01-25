@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "namespaces": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["system", "apps"]
+      }
+    },
+    "doppler": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "serviceToken": {
+          "type": "string",
+          "examples": ["dp.st.dev.XXXX"]
+        }
+      },
+      "required": ["enabled", "serviceToken"],
+      "additionalProperties": false
+    },
+    "traefik": {
+      "properties": {
+        "ports": {
+          "properties": {
+            "3proxy-http": {
+              "type": "object",
+              "properties": {
+                "port": {
+                  "description": "The port to access the HTTP proxy from outside the cluster",
+                  "type": "number",
+                  "minimum": 30000,
+                  "maximum": 32767
+                },
+                "protocol": {
+                  "type": "string",
+                  "enum": ["TCP"]
+                }
+              },
+              "required": ["port", "protocol"]
+            }
+          },
+          "required": ["3proxy-http"]
+        }
+      },
+      "required": ["ports"]
+    }
+  },
+  "required": ["namespaces"]
+}

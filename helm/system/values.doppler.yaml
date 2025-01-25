@@ -1,0 +1,25 @@
+# {{/*   The following message will be printed to the output file as a notice.   */}}
+# {{        print "      This file is generated automatically; DO NOT EDIT."       }}
+# {{    print "To make changes, update the `values.doppler.yaml` file instead."    }}
+# {{/* Use the Doppler `secrets substitute` command to generate the result file. */}}
+
+namespaces: [apps, system] # the list of namespaces to create
+
+traefik:
+  namespaceOverride: kube-system
+  nodeSelector: {node/role: master}
+  globalArguments: [] # disable `checknewversion` and `sendanonymoususage`
+  resources: {limits: {memory: 1024Mi}, requests: {memory: 256Mi}}
+  ports:
+    3proxy-http:
+      port: !!int {{ .HTTP_PROXY_PORT }}
+      protocol: TCP
+      expose: {default: true}
+
+external-secrets:
+  installCRDs: true
+  nameOverride: system
+
+doppler:
+  enabled: true
+  serviceToken: !!string {{ .DOPPLER_K8S_SERVICE_TOKEN }}
