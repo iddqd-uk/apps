@@ -1,0 +1,62 @@
+{{- if .Values.httpProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .Values.httpProxy.appName }}
+  namespace: {{ .Values.namespace }}
+  labels: {app: "{{ .Values.httpProxy.appName }}"}
+  annotations:
+    secrets.doppler.com/reload: 'true'
+
+spec:
+  replicas: {{ .Values.httpProxy.replicaCount | default 1 }}
+  selector: {matchLabels: {app: "{{ .Values.httpProxy.appName }}"}}
+  template:
+    metadata: {labels: {app: "{{ .Values.httpProxy.appName }}"}}
+    spec:
+      containers:
+        - name: "{{ .Values.httpProxy.appName }}"
+          image: "ghcr.io/tarampampam/3proxy:{{ .Values.httpProxy.version | default "latest" }}"
+          env:
+            {{- with .Values.httpProxy }}
+            - {name: PROXY_PORT, value: "3128"}
+            {{ if .dns.primaryResolver }}- {name: PRIMARY_RESOLVER, value: "{{ .dns.primaryResolver }}"}{{ end }}
+            {{ if .dns.secondaryResolver }}- {name: SECONDARY_RESOLVER, value: "{{ .dns.secondaryResolver }}"}{{ end }}
+            {{ if .logs.disabled }}- {name: LOG_OUTPUT, value: "/dev/null"}{{ end }}
+            {{- end }}
+            - name: PROXY_LOGIN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "doppler.syncedSecretName" }}"
+                  key: {{ $.Values.doppler.secrets.httpProxyLogin }}
+            - name: PROXY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "doppler.syncedSecretName" }}"
+                  key: {{ $.Values.doppler.secrets.httpProxyPassword }}
+          securityContext: # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+          ports:
+            - {name: http-proxy-port, containerPort: 3128, protocol: TCP}
+          readinessProbe: &httpProxyReadinessProbe
+            tcpSocket: {port: 3128} # the port to check
+            initialDelaySeconds: 5  # time to wait before starting the probe
+            periodSeconds: 10       # frequency of the probe
+            timeoutSeconds: 1       # threshold for considering the container unhealthy
+          livenessProbe: *httpProxyReadinessProbe
+          resources:
+            limits: {memory: 128Mi, cpu: 800m}
+            requests: {memory: 64Mi, cpu: 200m}
+      affinity:
+        nodeAffinity: # prefer running 3proxy on worker nodes, but allow running on the master node
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10 # scheduler prefers placing pods on worker nodes
+              preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions: # allows the pod to be scheduled on either the worker or master node
+                - {key: node/role, operator: In, values: [worker, master]}
+{{- end }}

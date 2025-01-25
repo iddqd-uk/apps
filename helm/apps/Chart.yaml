@@ -1,0 +1,8 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+
+apiVersion: v2
+name: apps
+description: A Helm chart for all the apps
+
+version: 0.1.0
+icon: https://avatars.githubusercontent.com/u/110490746

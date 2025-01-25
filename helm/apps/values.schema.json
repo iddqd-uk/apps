@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "namespace": {
+      "type": "string",
+      "enum": ["apps"]
+    },
+    "httpProxy": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "appName": {
+          "type": "string",
+          "minLength": 1,
+          "examples": ["http-proxy", "app-3proxy"]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "examples": ["1.10.0"],
+          "description": "The version of 3proxy to deploy (https://github.com/tarampampam/3proxy-docker/releases)"
+        },
+        "replicaCount": {
+          "description": "Number of replicas for scalability",
+          "type": "number",
+          "minimum": 0
+        },
+        "dns": {
+          "type": "object",
+          "properties": {
+            "primaryResolver": {
+              "type": "string",
+              "minLength": 7
+            },
+            "secondaryResolver": {
+              "type": "string",
+              "minLength": 7
+            }
+          },
+          "additionalProperties": false
+        },
+        "logs": {
+          "type": "object",
+          "properties": {
+            "disabled": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["enabled", "appName", "version", "replicaCount"],
+      "additionalProperties": false
+    },
+    "doppler": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "secrets": {
+          "description": "The hashmap, where key may be any string, and value is the name of the secret in Doppler",
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "examples": ["DB_NAME", "DB_PASSWORD"]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["enabled"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["namespace", "httpProxy", "doppler"]
+}

@@ -13,7 +13,7 @@ on:
     paths-ignore: ['**.md']
 
 concurrency:
-  group: ${{ github.ref }}
+  group: ${{ github.ref }}-tests
   cancel-in-progress: true
 
 jobs:
@@ -27,8 +27,17 @@ jobs:
   lint-charts:
     name: Lint the charts
     runs-on: ubuntu-latest
+    strategy: {fail-fast: false, matrix: {chart: [apps, system]}}
+    defaults: {run: {working-directory: "./helm/${{ matrix.chart }}"}}
     steps:
       - uses: actions/checkout@v4
+      - uses: dopplerhq/cli-action@v3
       - uses: azure/setup-helm@v4
-      - name: Lint Helm charts
-        run: for chart in ./charts/*; do helm lint $chart; done
+      - run: helm dependency update .
+      - run: doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
+        env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
+      - run: helm template . > /dev/null
+      - run: helm lint --strict .
+      - uses: stackrox/kube-linter-action@v1
+        with: {directory: .}
+      - run: rm -f ./values.yaml

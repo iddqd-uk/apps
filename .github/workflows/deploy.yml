@@ -1,0 +1,42 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+# docs: https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions
+
+name: 🚀 Deploy the charts
+
+on:
+  workflow_dispatch: # manual trigger only
+    inputs:
+      action:
+        description: 'Action to perform. If this is the first deployment - select "install", otherwise "upgrade"'
+        required: true
+        type: choice
+        options: [install, upgrade]
+        default: upgrade
+      chart:
+        description: 'Chart to deploy'
+        required: true
+        type: choice
+        options: [system, apps]
+        default: apps
+
+concurrency:
+  group: ${{ github.ref }}-helm-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy the chart
+    runs-on: ubuntu-latest
+    environment: Production
+    defaults: {run: {working-directory: "./helm/${{ inputs.chart }}"}}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dopplerhq/cli-action@v3
+      - uses: azure/setup-kubectl@v4
+      - uses: azure/setup-helm@v4
+      - run: |
+          doppler --no-check-version secrets get --plain KUBE_CONFIG > ./kubeconfig.yaml
+          doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
+        env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
+      - run: helm dependency update .
+      - run: helm ${{ inputs.action }} --kubeconfig ./kubeconfig.yaml --atomic ${{ inputs.chart }} .

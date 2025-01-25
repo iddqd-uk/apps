@@ -2,8 +2,15 @@
 /.idea
 /.vscode
 
+## Secrets
+/kubeconfig.yaml
+/helm/*/values.yaml
+
+## 3rd party charts
+/helm/*/charts/
+
 ## Temp dirs & trash
-/temp
-/tmp
-*.env
+temp/
+tmp/
+/dump*.yaml
 .DS_Store
