@@ -8,10 +8,18 @@ namespace: apps
 httpProxy:
   enabled: true
   appName: proxy-3proxy
+  # renovate: source=github-releases name=tarampampam/3proxy-docker
   version: 1.10.0 # https://github.com/tarampampam/3proxy-docker/releases
   replicaCount: 2
   dns: {primaryResolver: 77.88.8.8, secondaryResolver: 8.8.8.8}
   logs: {disabled: false}
+
+tgProxy:
+  enabled: true
+  appName: proxy-mtg
+  # renovate: source=github-releases name=9seconds/mtg
+  version: 2.1.7 # https://github.com/9seconds/mtg/releases
+  replicaCount: 1
 
 doppler:
   enabled: true
@@ -19,3 +27,4 @@ doppler:
     httpProxyLogin: HTTP_PROXY_LOGIN
     httpProxyPassword: HTTP_PROXY_PASSWORD
     httpProxyPort: HTTP_PROXY_PORT
+    tgProxySecret: TG_PROXY_SECRET

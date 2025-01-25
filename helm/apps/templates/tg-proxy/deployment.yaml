@@ -1,0 +1,50 @@
+{{- if .Values.tgProxy.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .Values.tgProxy.appName }}
+  namespace: {{ .Values.namespace }}
+  labels: {app: "{{ .Values.tgProxy.appName }}"}
+
+spec:
+  replicas: {{ .Values.tgProxy.replicaCount | default 1 }}
+  selector: {matchLabels: {app: "{{ .Values.tgProxy.appName }}"}}
+  template:
+    metadata: {labels: {app: "{{ .Values.tgProxy.appName }}"}}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: "{{ .Values.tgProxy.appName }}"
+          image: "ghcr.io/9seconds/mtg:{{ .Values.tgProxy.version | default "2" }}"
+          args:
+            - simple-run
+            - 0.0.0.0:443
+            - $(TG_SECRET)
+            #- --debug
+            - --concurrency=512
+            - --prefer-ip=prefer-ipv4
+            - --domain-fronting-port=443
+            - --doh-ip=9.9.9.9
+            - --antireplay-cache-size=1MB
+          env:
+            - name: TG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ template "doppler.syncedSecretName" }}"
+                  key: {{ $.Values.doppler.secrets.tgProxySecret }}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+          ports:
+            - {name: tg-proxy-port, containerPort: 443, protocol: TCP}
+          {{- include "healthcheck.tcpPortProbes" 443 | nindent 10 }}
+          resources:
+            limits: {memory: 256Mi, cpu: 550m}
+            requests: {memory: 64Mi, cpu: 200m}
+      affinity:
+        nodeAffinity:
+          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}

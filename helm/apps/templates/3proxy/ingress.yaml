@@ -6,8 +6,8 @@ metadata:
   name: {{ .Values.httpProxy.appName }}-http-tcp-ingress
   namespace: {{ .Values.namespace }}
 
-spec:
-  entryPoints: [3proxy-http] # the name defined in the values.yaml
+spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroutetcp
+  entryPoints: [3proxy-http] # the name defined in the helm/system/values.doppler.yaml
   routes:
     - match: HostSNI(`*`)
       services: [{name: "{{ .Values.httpProxy.appName }}-service", namespace: {{ .Values.namespace }}, port: 3128}]

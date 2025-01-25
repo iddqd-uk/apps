@@ -8,13 +8,21 @@ namespaces: [apps, system] # the list of namespaces to create
 traefik:
   namespaceOverride: kube-system
   nodeSelector: {node/role: master}
-  globalArguments: [] # disable `checknewversion` and `sendanonymoususage`
-  resources: {limits: {memory: 1024Mi}, requests: {memory: 256Mi}}
+  #ingressRoute: {dashboard: {enabled: true}} # enable the Traefik dashboard on the traefik endpoint
   ports:
     3proxy-http:
       port: !!int {{ .HTTP_PROXY_PORT }}
       protocol: TCP
       expose: {default: true}
+    web:
+      redirections: {entryPoint: {to: websecure, scheme: https}} # redirect HTTP to HTTPS
+  globalArguments: [] # disable `checknewversion` and `sendanonymoususage`
+  logs:
+    general: {format: json} # log in JSON format
+    access: {enabled: false} # disable access logs
+  resources:
+    limits: {memory: 1024Mi}
+    requests: {memory: 256Mi}
 
 external-secrets:
   installCRDs: true

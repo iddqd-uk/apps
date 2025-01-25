@@ -6,8 +6,6 @@ metadata:
   name: {{ .Values.httpProxy.appName }}
   namespace: {{ .Values.namespace }}
   labels: {app: "{{ .Values.httpProxy.appName }}"}
-  annotations:
-    secrets.doppler.com/reload: 'true'
 
 spec:
   replicas: {{ .Values.httpProxy.replicaCount | default 1 }}
@@ -15,6 +13,7 @@ spec:
   template:
     metadata: {labels: {app: "{{ .Values.httpProxy.appName }}"}}
     spec:
+      automountServiceAccountToken: false
       containers:
         - name: "{{ .Values.httpProxy.appName }}"
           image: "ghcr.io/tarampampam/3proxy:{{ .Values.httpProxy.version | default "latest" }}"
@@ -41,22 +40,11 @@ spec:
             runAsGroup: 10001
           ports:
             - {name: http-proxy-port, containerPort: 3128, protocol: TCP}
-          readinessProbe: &httpProxyReadinessProbe
-            tcpSocket: {port: 3128} # the port to check
-            initialDelaySeconds: 5  # time to wait before starting the probe
-            periodSeconds: 10       # frequency of the probe
-            timeoutSeconds: 1       # threshold for considering the container unhealthy
-          livenessProbe: *httpProxyReadinessProbe
+          {{- include "healthcheck.tcpPortProbes" 443 | nindent 10 }}
           resources:
             limits: {memory: 128Mi, cpu: 800m}
             requests: {memory: 64Mi, cpu: 200m}
       affinity:
-        nodeAffinity: # prefer running 3proxy on worker nodes, but allow running on the master node
-          preferredDuringSchedulingIgnoredDuringExecution:
-            - weight: 10 # scheduler prefers placing pods on worker nodes
-              preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions: # allows the pod to be scheduled on either the worker or master node
-                - {key: node/role, operator: In, values: [worker, master]}
+        nodeAffinity:
+          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
 {{- end }}
