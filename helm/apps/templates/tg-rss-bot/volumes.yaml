@@ -1,0 +1,39 @@
+{{- if .Values.tgRssBot.enabled }}
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+  name: {{ .Values.tgRssBot.appName }}-pv
+  labels: {app: "{{ .Values.tgRssBot.appName }}"}
+
+spec: # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
+  capacity: {storage: 1Mi}
+  volumeMode: Filesystem
+  accessModes: [ReadWriteOnce]
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: available-on-every-node
+  # before the first deployment, you need to create this directory on ANY node (due to NFS):
+  #   mkdir /mnt/persistent-volume/tg-rss-bot
+  #   chmod 777 -R /mnt/persistent-volume/tg-rss-bot
+  local: {path: "/mnt/persistent-volume/{{ .Values.tgRssBot.appName }}"}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions: [{key: node/persistent-volume-mounted, operator: In, values: ["true"]}]
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: {{ .Values.tgRssBot.appName }}-pvc
+  namespace: {{ .Values.namespace }}
+  labels: {app: "{{ .Values.tgRssBot.appName }}"}
+
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: {requests: {storage: 1Mi}}
+  storageClassName: available-on-every-node
+  selector: {matchLabels: {app: "{{ .Values.tgRssBot.appName }}"}}
+{{- end }}

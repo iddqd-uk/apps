@@ -3,6 +3,8 @@ Returns the name of the Kubernetes Secret that stores the Doppler API authentica
 */}}
 {{- define "doppler.secretName" -}}doppler-token-auth-api{{- end }}
 
+{{- define "persistent" -}}doppler-token-auth-api{{- end }}
+
 {{/*
 Returns the name of the key used for the Doppler API authentication token in the default Kubernetes Secret.
 */}}

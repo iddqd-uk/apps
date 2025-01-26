@@ -13,7 +13,7 @@ help: ## Display a list of available commands with descriptions
 # --- CODE GENERATION -------------------------------------------------------------------------------------------------
 
 kubeconfig.yaml: ## Generate a kubeconfig.yaml file with cluster credentials
-	@test -f ./kubeconfig.yaml && rm -f ./kubeconfig.yaml # due to file permissions - remove existing file if present
+	@test -f ./kubeconfig.yaml && rm -f ./kubeconfig.yaml || true # due to file permissions remove existing file first
 	doppler $(DOPPLER_ARGS) secrets get --plain KUBE_CONFIG > ./kubeconfig.yaml
 	@chmod 400 ./kubeconfig.yaml # set minimal file permissions
 

@@ -21,6 +21,13 @@ tgProxy:
   version: 2.1.7 # https://github.com/9seconds/mtg/releases
   replicaCount: 1
 
+tgRssBot:
+  enabled: true
+  appName: tg-rss-bot
+  # TODO: add renovate configuration
+  version: 2.0.0-alpha-13 # https://github.com/tarampampam/rssbot-docker/releases
+  adminIDs: !!array {{ .TG_RSS_BOT_ADMIN_IDS }}
+
 doppler:
   enabled: true
   secrets: # the list of secrets is stored in Doppler and should be used as a reference (update it manually as needed)
@@ -28,3 +35,4 @@ doppler:
     httpProxyPassword: HTTP_PROXY_PASSWORD
     httpProxyPort: HTTP_PROXY_PORT
     tgProxySecret: TG_PROXY_SECRET
+    tgRssBotAuthToken: TG_RSS_BOT_AUTH_TOKEN
