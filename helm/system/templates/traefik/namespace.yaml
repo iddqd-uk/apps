@@ -1,0 +1,6 @@
+{{ with .Values.traefik }}
+apiVersion: v1
+kind: Namespace
+
+metadata: {name: "{{ .namespaceOverride }}"}
+{{- end }}

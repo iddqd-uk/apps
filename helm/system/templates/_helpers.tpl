@@ -16,7 +16,7 @@ The name of the secret to use will be in form of "<appName>-secrets".
 
 # Secret with the Doppler token (it required for the external-secrets.io provider)
 apiVersion: v1
-kind: Secret
+kind: Secret # COPY_ME
 
 metadata:
   name: "{{ $dopplerAuthTokenSecretName }}"
@@ -29,7 +29,7 @@ data: {dopplerTokenKey: "{{ $dopplerServiceToken | b64enc }}"}
 
 # Configuration of external-secrets.io, specifying the source from which the secrets will be fetched (Doppler provider)
 apiVersion: external-secrets.io/v1beta1
-kind: SecretStore
+kind: SecretStore # COPY_ME
 
 metadata:
   name: "{{ $secretsProviderName }}"
@@ -48,7 +48,7 @@ spec:
 
 # ExternalSecret will fetch the secrets from the Doppler provider and store them in the K8s Secret
 apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret
+kind: ExternalSecret # COPY_ME
 
 metadata:
   name: "{{ $appName }}-external-secret"
@@ -66,41 +66,10 @@ spec: # https://external-secrets.io/latest/api/externalsecret/#example
 ---
 
 # All fetched secrets will be stored in this K8s Secret
-apiVersion: v1
+apiVersion: v1 # COPY_ME
 kind: Secret
 
 metadata:
   name: "{{ $appSecrets }}"
   namespace: "{{ $namespace }}"
-{{- end -}}
-
-{{/*
-Prefer running on worker nodes, but allow running on the master node too.
-*/}}
-{{- define "nodeAffinity.preferWorkersButAllowMaster" -}}
-preferredDuringSchedulingIgnoredDuringExecution:
-  - weight: 10 # scheduler prefers placing pods on worker nodes
-    preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
-requiredDuringSchedulingIgnoredDuringExecution:
-  nodeSelectorTerms:
-    - matchExpressions: # allows the pod to be scheduled on either the worker or master node
-      - {key: node/role, operator: In, values: [worker, master]}
-{{- end -}}
-
-{{/*
-Simple TCP port probes (liveness + readiness) for a health check.
-*/}}
-{{- define "healthcheck.tcpPortProbes" -}}
-livenessProbe:
-  tcpSocket:
-    port: {{ . }}        # the port to check
-  initialDelaySeconds: 5 # time to wait before starting the probe
-  periodSeconds: 10      # frequency of the probe
-  timeoutSeconds: 1      # threshold for considering the container unhealthy
-readinessProbe:
-  tcpSocket:
-    port: {{ . }}        # the port to check
-  initialDelaySeconds: 5 # time to wait before starting the probe
-  periodSeconds: 10      # frequency of the probe
-  timeoutSeconds: 1      # threshold for considering the container unhealthy
 {{- end -}}

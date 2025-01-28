@@ -39,4 +39,10 @@ jobs:
           doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
         env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
       - run: helm dependency update .
-      - run: helm ${{ inputs.action }} --kubeconfig ./kubeconfig.yaml --atomic ${{ inputs.chart }} .
+      - run: >
+          helm ${{ inputs.action }}
+            --kubeconfig ./kubeconfig.yaml
+            --namespace ${{ inputs.chart }}
+            --atomic
+            --create-namespace
+            ${{ inputs.chart }} .

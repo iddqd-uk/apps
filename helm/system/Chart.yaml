@@ -14,3 +14,6 @@ dependencies:
   - name: external-secrets
     version: 0.13.0
     repository: https://charts.external-secrets.io
+  - name: prometheus
+    version: 27.1.0
+    repository: https://prometheus-community.github.io/helm-charts

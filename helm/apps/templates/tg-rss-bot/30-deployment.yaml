@@ -1,27 +1,26 @@
-{{- if .Values.tgRssBot.enabled }}
+{{ with .Values.tgRssBot }}
+{{- if .enabled }}
 apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: {{ .Values.tgRssBot.appName }}
-  namespace: {{ .Values.namespace }}
-  labels: {app: "{{ .Values.tgRssBot.appName }}"}
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
 
 spec:
   replicas: 1
-  selector: {matchLabels: {app: "{{ .Values.tgRssBot.appName }}"}}
+  selector: {matchLabels: {app: "{{ .appName }}"}}
   template:
-    metadata: {labels: {app: "{{ .Values.tgRssBot.appName }}"}}
+    metadata: {labels: {app: "{{ .appName }}"}}
     spec:
       automountServiceAccountToken: false
       containers:
-        - name: "{{ .Values.tgRssBot.appName }}"
-          image: "ghcr.io/tarampampam/rssbot:{{ .Values.tgRssBot.version }}-en"
+        - name: "{{ .appName }}"
+          image: "ghcr.io/tarampampam/rssbot:{{ .version }}-en"
           args:
-            {{- range $id := .Values.tgRssBot.adminIDs }}
             - --admin
-            - "{{ $id }}"
-            {{- end }}
+            - $(ADMIN_ID)
             - --database
             - /data/rss-bot.json
             - $(AUTH_TOKEN)
@@ -29,8 +28,13 @@ spec:
             - name: AUTH_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "doppler.syncedSecretName" }}"
+                  name: "{{ .appName }}-secrets"
                   key: {{ $.Values.doppler.secrets.tgRssBotAuthToken }}
+            - name: ADMIN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .appName }}-secrets"
+                  key: {{ $.Values.doppler.secrets.tgRssBotAdminID }}
           volumeMounts:
             - name: app-data
               mountPath: /data
@@ -38,14 +42,15 @@ spec:
             runAsNonRoot: true
             runAsUser: 10001
             runAsGroup: 10001
-            readOnlyRootFilesystem: false # TODO: set to true
+            readOnlyRootFilesystem: true
           resources:
             limits: {memory: 64Mi, cpu: 550m}
             requests: {memory: 10Mi, cpu: 100m}
       volumes:
         - name: app-data
-          persistentVolumeClaim: {claimName: {{ .Values.tgRssBot.appName }}-pvc}
+          persistentVolumeClaim: {claimName: {{ .appName }}-pvc}
       affinity:
         nodeAffinity:
           {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}
 {{- end }}

@@ -1,38 +1,37 @@
-{{- if .Values.httpProxy.enabled }}
+{{ with .Values.httpProxy }}
+{{- if .enabled }}
 apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: {{ .Values.httpProxy.appName }}
-  namespace: {{ .Values.namespace }}
-  labels: {app: "{{ .Values.httpProxy.appName }}"}
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
 
 spec:
-  replicas: {{ .Values.httpProxy.replicaCount | default 1 }}
-  selector: {matchLabels: {app: "{{ .Values.httpProxy.appName }}"}}
+  replicas: {{ .replicaCount | default 1 }}
+  selector: {matchLabels: {app: "{{ .appName }}"}}
   template:
-    metadata: {labels: {app: "{{ .Values.httpProxy.appName }}"}}
+    metadata: {labels: {app: "{{ .appName }}"}}
     spec:
       automountServiceAccountToken: false
       containers:
-        - name: "{{ .Values.httpProxy.appName }}"
-          image: "ghcr.io/tarampampam/3proxy:{{ .Values.httpProxy.version | default "latest" }}"
+        - name: "{{ .appName }}"
+          image: "ghcr.io/tarampampam/3proxy:{{ .version | default "latest" }}"
           env:
-            {{- with .Values.httpProxy }}
             - {name: PROXY_PORT, value: "3128"}
             {{ if .dns.primaryResolver }}- {name: PRIMARY_RESOLVER, value: "{{ .dns.primaryResolver }}"}{{ end }}
             {{ if .dns.secondaryResolver }}- {name: SECONDARY_RESOLVER, value: "{{ .dns.secondaryResolver }}"}{{ end }}
             {{ if .logs.disabled }}- {name: LOG_OUTPUT, value: "/dev/null"}{{ end }}
-            {{- end }}
             - name: PROXY_LOGIN
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "doppler.syncedSecretName" }}"
+                  name: "{{ .appName }}-secrets"
                   key: {{ $.Values.doppler.secrets.httpProxyLogin }}
             - name: PROXY_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "doppler.syncedSecretName" }}"
+                  name: "{{ .appName }}-secrets"
                   key: {{ $.Values.doppler.secrets.httpProxyPassword }}
           securityContext: # https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
             runAsNonRoot: true
@@ -47,4 +46,5 @@ spec:
       affinity:
         nodeAffinity:
           {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}
 {{- end }}

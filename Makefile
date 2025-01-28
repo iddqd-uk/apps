@@ -23,7 +23,7 @@ helm/%/values.yaml: .FORCE ## Generate a chart values.yaml file with secrets for
 
 helm/%/charts: ## Download and install Helm chart dependencies for the specified directory
 	helm dependency update ./helm/$*/ 1>/dev/null
-	@test ! -d ./helm/$*/charts && mkdir -p ./helm/$*/charts # create an empty directory even if no dependencies installed
+	@test ! -d ./helm/$*/charts && mkdir -p ./helm/$*/charts || true # create an empty directory even if no deps installed
 
 dump.%.yaml: helm/%/charts helm/%/values.yaml ## Render the specified Helm chart into a YAML dump file
 	helm template ./helm/$* > ./dump.$*.yaml
@@ -46,14 +46,14 @@ git-leaks: ## Scan the repository for secrets using gitleaks
 # --- DEPLOYMENT ------------------------------------------------------------------------------------------------------
 
 install-chart-%: kubeconfig.yaml helm/%/values.yaml helm/%/charts ## Install the specified Helm chart
-	helm install --kubeconfig ./kubeconfig.yaml --atomic $* ./helm/$*
+	helm install --kubeconfig ./kubeconfig.yaml --atomic --create-namespace --namespace $* $* ./helm/$*
 
 install-system: lint-system install-chart-system ## Install the system components Helm chart
 install-apps: lint-apps install-chart-apps       ## Install the applications Helm chart
 install: install-system install-apps             ## Install all Helm charts (system and applications)
 
 upgrade-chart-%: kubeconfig.yaml helm/%/values.yaml helm/%/charts ## Upgrade the specified Helm chart
-	helm upgrade --kubeconfig ./kubeconfig.yaml --atomic $* ./helm/$*
+	helm upgrade --kubeconfig ./kubeconfig.yaml --atomic --namespace $* $* ./helm/$*
 
 upgrade-system: lint-system upgrade-chart-system ## Upgrade the system components Helm chart
 upgrade-apps: lint-apps upgrade-chart-apps       ## Upgrade the applications Helm chart

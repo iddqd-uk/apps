@@ -1,22 +1,23 @@
-{{- if .Values.tgProxy.enabled }}
+{{ with .Values.tgProxy }}
+{{- if .enabled }}
 apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: {{ .Values.tgProxy.appName }}
-  namespace: {{ .Values.namespace }}
-  labels: {app: "{{ .Values.tgProxy.appName }}"}
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
 
 spec:
-  replicas: {{ .Values.tgProxy.replicaCount | default 1 }}
-  selector: {matchLabels: {app: "{{ .Values.tgProxy.appName }}"}}
+  replicas: {{ $.Values.tgProxy.replicaCount | default 1 }}
+  selector: {matchLabels: {app: "{{ .appName }}"}}
   template:
-    metadata: {labels: {app: "{{ .Values.tgProxy.appName }}"}}
+    metadata: {labels: {app: "{{ .appName }}"}}
     spec:
       automountServiceAccountToken: false
       containers:
-        - name: "{{ .Values.tgProxy.appName }}"
-          image: "ghcr.io/9seconds/mtg:{{ .Values.tgProxy.version | default "2" }}"
+        - name: "{{ .appName }}"
+          image: "ghcr.io/9seconds/mtg:{{ .version | default "2" }}"
           args:
             - simple-run
             - 0.0.0.0:443
@@ -31,7 +32,7 @@ spec:
             - name: TG_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: "{{ template "doppler.syncedSecretName" }}"
+                  name: "{{ .appName }}-secrets"
                   key: {{ $.Values.doppler.secrets.tgProxySecret }}
           securityContext:
             runAsNonRoot: true
@@ -47,4 +48,5 @@ spec:
       affinity:
         nodeAffinity:
           {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}
 {{- end }}
