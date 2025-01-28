@@ -16,7 +16,7 @@ The name of the secret to use will be in form of "<appName>-secrets".
 
 # Secret with the Doppler token (it required for the external-secrets.io provider)
 apiVersion: v1
-kind: Secret # COPY_ME
+kind: Secret
 
 metadata:
   name: "{{ $dopplerAuthTokenSecretName }}"
@@ -29,7 +29,7 @@ data: {dopplerTokenKey: "{{ $dopplerServiceToken | b64enc }}"}
 
 # Configuration of external-secrets.io, specifying the source from which the secrets will be fetched (Doppler provider)
 apiVersion: external-secrets.io/v1beta1
-kind: SecretStore # COPY_ME
+kind: SecretStore
 
 metadata:
   name: "{{ $secretsProviderName }}"
@@ -48,7 +48,7 @@ spec:
 
 # ExternalSecret will fetch the secrets from the Doppler provider and store them in the K8s Secret
 apiVersion: external-secrets.io/v1beta1
-kind: ExternalSecret # COPY_ME
+kind: ExternalSecret
 
 metadata:
   name: "{{ $appName }}-external-secret"
@@ -66,7 +66,7 @@ spec: # https://external-secrets.io/latest/api/externalsecret/#example
 ---
 
 # All fetched secrets will be stored in this K8s Secret
-apiVersion: v1 # COPY_ME
+apiVersion: v1
 kind: Secret
 
 metadata:

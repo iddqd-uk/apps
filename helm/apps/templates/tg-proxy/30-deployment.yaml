@@ -43,8 +43,8 @@ spec:
             - {name: tg-proxy-port, containerPort: 443, protocol: TCP}
           {{- include "healthcheck.tcpPortProbes" 443 | nindent 10 }}
           resources:
-            limits: {memory: 256Mi, cpu: 550m}
             requests: {memory: 64Mi, cpu: 200m}
+            limits: {memory: 256Mi, cpu: 550m}
       affinity:
         nodeAffinity:
           {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}

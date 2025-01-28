@@ -19,35 +19,9 @@ traefik:
     general: {format: json} # log in JSON format
     access: {enabled: false} # disable access logs
   resources:
-    limits: {memory: 1024Mi}
     requests: {memory: 256Mi}
+    limits: {memory: 1024Mi}
 
 external-secrets:
   installCRDs: true
   namespaceOverride: secrets
-
-prometheus:
-  server:
-    global: {scrape_interval: 60s}
-    retention: "6h" # reduce in-memory data for queries and recent scrapes
-    retentionSize: "1GB" # reduce the wal (write-ahead log) size
-    extraArgs:
-      storage.tsdb.min-block-duration: "2h" # reduce the on-disk storage size
-      storage.tsdb.wal-segment-size: "16MB"
-      query.max-concurrency: "10" # limit the number of concurrent queries
-      query.max-samples: "1000000" # limit the number of samples per query
-      log.format: json
-    remoteWrite:
-      - url: "{{ .GRAFANA_CLOUD_PROM_URL }}"
-        basic_auth:
-          username: "{{ .GRAFANA_CLOUD_PROM_USER }}"
-          password: "{{ .GRAFANA_CLOUD_PROM_PASSWORD }}"
-    resources:
-      limits: {memory: 1024Mi}
-      requests: {memory: 512Mi}
-  alertmanager: {enabled: false}
-  prometheus-pushgateway: {enabled: false}
-
-doppler:
-  enabled: true
-  serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"

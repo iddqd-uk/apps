@@ -5,8 +5,5 @@ dependencies:
 - name: external-secrets
   repository: https://charts.external-secrets.io
   version: 0.13.0
-- name: prometheus
-  repository: https://prometheus-community.github.io/helm-charts
-  version: 27.1.0
-digest: sha256:b86d52cbb648e01d3477bfefeb2e028bdc454e699fbac4aac10df2ed3c07508e
-generated: "2025-01-28T10:21:43.107140201+04:00"
+digest: sha256:f5a2a5b81328c44dac61707edc45eb3901695646efbf8061a6460a73e4dec9c9
+generated: "2025-01-28T21:01:25.309815166+04:00"

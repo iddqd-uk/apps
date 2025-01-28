@@ -16,7 +16,7 @@ on:
         description: 'Chart to deploy'
         required: true
         type: choice
-        options: [system, apps]
+        options: [system, monitoring, apps]
         default: apps
 
 concurrency:
