@@ -38,7 +38,7 @@ spec:
             runAsUser: 10001
             runAsGroup: 10001
           ports:
-            - {name: http-proxy-port, containerPort: 3128, protocol: TCP}
+            - {name: http-proxy, containerPort: 3128, protocol: TCP}
           {{- include "healthcheck.tcpPortProbes" 3128 | nindent 10 }}
           resources:
             limits: {memory: 128Mi, cpu: 800m}

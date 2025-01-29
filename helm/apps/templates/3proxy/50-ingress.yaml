@@ -4,7 +4,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRouteTCP
 
 metadata:
-  name: {{ .appName }}-http-tcp-ingress
+  name: {{ .appName }}-http-tcp
   namespace: {{ .namespace }}
 
 spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroutetcp

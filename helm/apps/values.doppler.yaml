@@ -29,6 +29,12 @@ tgRssBot:
   # TODO: add renovate configuration
   version: 2.0.0-alpha-13 # https://github.com/tarampampam/rssbot-docker/releases
 
+kubeIddqd: # this is the just an example of the configuration to expose http service over the Ingress with TLS
+  enabled: true
+  appName: kube-iddqd
+  namespace: kube-iddqd
+  nginx: {image: ghcr.io/nginxinc/nginx-unprivileged, tag: 1.27-alpine}
+
 doppler:
   enabled: true
   serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"

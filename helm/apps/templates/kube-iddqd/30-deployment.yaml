@@ -1,0 +1,52 @@
+{{ with .Values.kubeIddqd }}
+{{- if .enabled }}
+{{- $contentHash := include (print $.Template.BasePath "/kube-iddqd/20-config-map.yaml") $ | sha256sum -}}
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+  annotations: {checksum/config: "{{ $contentHash }}"}
+
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: "{{ .appName }}"}}
+  template:
+    metadata:
+      labels: {app: "{{ .appName }}"}
+      annotations: {checksum/config: "{{ $contentHash }}"}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: "{{ .appName }}"
+          image: "{{ .nginx.image }}:{{ .nginx.tag | default "latest" }}"
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 101
+            runAsGroup: 101
+          ports:
+            - {name: http, containerPort: 8080, protocol: TCP}
+          volumeMounts:
+            - name: html-volume
+              mountPath: /usr/share/nginx/html
+              readOnly: true
+          livenessProbe:
+            httpGet: {port: http, path: /index.html}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {port: http, path: /index.html}
+            periodSeconds: 10
+          resources:
+            limits: {memory: 32Mi, cpu: 200m}
+            requests: {memory: 8Mi, cpu: 20m}
+      volumes:
+        - name: html-volume
+          configMap: {name: "{{ .appName }}-nginx-content"}
+      affinity:
+        nodeAffinity:
+          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}
+{{- end }}
