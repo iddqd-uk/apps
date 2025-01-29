@@ -30,8 +30,13 @@ spec:
           ports:
             - {name: http, containerPort: 8080, protocol: TCP}
           volumeMounts:
-            - name: html-volume
-              mountPath: /usr/share/nginx/html
+            - name: config-map
+              mountPath: /usr/share/nginx/html/index.html
+              subPath: index.html
+              readOnly: true
+            - name: config-map
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
               readOnly: true
           livenessProbe:
             httpGet: {port: http, path: /index.html}
@@ -43,8 +48,8 @@ spec:
             limits: {memory: 32Mi, cpu: 200m}
             requests: {memory: 8Mi, cpu: 20m}
       volumes:
-        - name: html-volume
-          configMap: {name: "{{ .appName }}-nginx-content"}
+        - name: config-map
+          configMap: {name: "{{ .appName }}-nginx"}
       affinity:
         nodeAffinity:
           {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}

@@ -44,3 +44,6 @@ traefik:
 external-secrets:
   installCRDs: true
   namespaceOverride: secrets
+  log: {level: warn}
+  webhook: {log: {level: warn}}
+  certController: {log: {level: warn}}
