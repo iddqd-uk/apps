@@ -25,7 +25,7 @@ concurrency:
 
 jobs:
   deploy:
-    name: Deploy the chart
+    name: Deploy the ${{ inputs.chart }} chart
     runs-on: ubuntu-latest
     environment: Production
     defaults: {run: {working-directory: "./helm/${{ inputs.chart }}"}}
