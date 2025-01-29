@@ -14,6 +14,25 @@ traefik:
       expose: {default: true}
     web:
       redirections: {entryPoint: {to: websecure, scheme: https}} # redirect HTTP to HTTPS
+    websecure:
+      tls: {certResolver: letsencrypt} # use configured below certificates resolver for HTTPS
+  persistence:
+    enabled: true
+    name: certs
+    path: /certs
+    existingClaim: traefik-certs-pvc
+  certificatesResolvers:
+    letsencrypt:
+      acme:
+        #caServer: https://acme-staging-v02.api.letsencrypt.org/directory # staging server
+        caServer: https://acme-v02.api.letsencrypt.org/directory # production server
+        email: "{{ .LETSENCRYPT_CLOUDFLARE_EMAIL }}"
+        storage: /certs/acme.json
+        dnsChallenge:
+          provider: cloudflare
+          resolvers: ["1.0.0.1:53", "1.1.1.1:53", "8.8.8.8:53"]
+  env:
+    - {name: CF_DNS_API_TOKEN, value: "{{ .LETSENCRYPT_CLOUDFLARE_TOKEN }}"} # Cloudflare API token
   globalArguments: [] # disable `checknewversion` and `sendanonymoususage`
   logs:
     general: {format: json} # log in JSON format

@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: PersistentVolume
+
+metadata:
+  name: traefik-certs-pv
+
+spec: # https://kubernetes.io/docs/concepts/storage/persistent-volumes/#persistent-volumes
+  capacity: {storage: 128Mi}
+  volumeMode: Filesystem
+  accessModes: [ReadWriteOnce]
+  storageClassName: "" # empty string must be explicitly set otherwise default StorageClass will be set
+  persistentVolumeReclaimPolicy: Retain
+  claimRef: {name: traefik-certs-pvc, namespace: "{{ .Values.traefik.namespaceOverride }}"}
+  # before the first deployment, you need to create this directory on the master node:
+  #   mkdir -m 777 /mnt/persistent-volume/traefik-certs
+  local: {path: /mnt/persistent-volume/traefik-certs}
+  nodeAffinity:
+    required:
+      nodeSelectorTerms: # must be same as in the `traefik.nodeSelector` value
+        - matchExpressions: [{key: node/role, operator: In, values: ["master"]}]
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+
+metadata:
+  name: traefik-certs-pvc
+  namespace: {{ .Values.traefik.namespaceOverride }}
+
+spec:
+  accessModes: [ReadWriteOnce]
+  resources: {requests: {storage: 32Mi}}
+  storageClassName: ""
+  volumeName: traefik-certs-pv

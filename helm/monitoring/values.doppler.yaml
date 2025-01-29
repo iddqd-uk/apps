@@ -22,8 +22,11 @@ nri-bundle:
   kubeEvents: {enabled: true}
   newrelic-prometheus-agent:
     enabled: true
-    lowDataMode: true
     config: {kubernetes: {integrations_filter: {enabled: true}}}
   k8s-agents-operator: {enabled: true}
   logging: {enabled: true}
-  newrelic-logging: {lowDataMode: false}
+  newrelic-logging:
+    enabled: true
+    # since I'm using K8s secret to specify the license key, I need to specify the endpoints manually
+    endpoint: https://log-api.eu.newrelic.com/log/v1
+    metricsEndpoint: metric-api.eu.newrelic.com
