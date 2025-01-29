@@ -16,7 +16,7 @@ on:
         description: 'Chart to deploy'
         required: true
         type: choice
-        options: [system, apps]
+        options: [system, monitoring, apps]
         default: apps
 
 concurrency:
@@ -39,4 +39,10 @@ jobs:
           doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
         env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
       - run: helm dependency update .
-      - run: helm ${{ inputs.action }} --kubeconfig ./kubeconfig.yaml --atomic ${{ inputs.chart }} .
+      - run: >
+          helm ${{ inputs.action }}
+            --kubeconfig ./kubeconfig.yaml
+            --namespace ${{ inputs.chart }}
+            --atomic
+            --create-namespace
+            ${{ inputs.chart }} .

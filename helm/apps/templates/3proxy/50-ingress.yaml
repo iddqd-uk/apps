@@ -1,0 +1,16 @@
+{{ with .Values.httpProxy }}
+{{- if .enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRouteTCP
+
+metadata:
+  name: {{ .appName }}-http-tcp
+  namespace: {{ .namespace }}
+
+spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroutetcp
+  entryPoints: [3proxy-http] # the name defined in the helm/system/values.doppler.yaml
+  routes:
+    - match: HostSNI(`*`)
+      services: [{name: "{{ .appName }}-service", namespace: {{ .namespace }}, port: 3128}]
+{{- end }}
+{{- end }}

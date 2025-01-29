@@ -1,0 +1,56 @@
+{{ with .Values.tgRssBot }}
+{{- if .enabled }}
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: "{{ .appName }}"}}
+  template:
+    metadata: {labels: {app: "{{ .appName }}"}}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: "{{ .appName }}"
+          image: "ghcr.io/tarampampam/rssbot:{{ .version }}-en"
+          args:
+            - --admin
+            - $(ADMIN_ID)
+            - --database
+            - /data/rss-bot.json
+            - $(AUTH_TOKEN)
+          env:
+            - name: AUTH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .appName }}-secrets"
+                  key: {{ $.Values.doppler.secrets.tgRssBotAuthToken }}
+            - name: ADMIN_ID
+              valueFrom:
+                secretKeyRef:
+                  name: "{{ .appName }}-secrets"
+                  key: {{ $.Values.doppler.secrets.tgRssBotAdminID }}
+          volumeMounts:
+            - name: app-data
+              mountPath: /data
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            readOnlyRootFilesystem: true
+          resources:
+            requests: {memory: 10Mi, cpu: 100m}
+            limits: {memory: 64Mi, cpu: 550m}
+      volumes:
+        - name: app-data
+          persistentVolumeClaim: {claimName: {{ .appName }}-pvc}
+      affinity:
+        nodeAffinity:
+          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+{{- end }}
+{{- end }}

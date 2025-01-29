@@ -2,27 +2,6 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
-    "namespaces": {
-      "type": "array",
-      "items": {
-        "type": "string",
-        "enum": ["system", "apps"]
-      }
-    },
-    "doppler": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "serviceToken": {
-          "type": "string",
-          "examples": ["dp.st.dev.XXXX"]
-        }
-      },
-      "required": ["enabled", "serviceToken"],
-      "additionalProperties": false
-    },
     "traefik": {
       "properties": {
         "ports": {
@@ -49,6 +28,5 @@
       },
       "required": ["ports"]
     }
-  },
-  "required": ["namespaces"]
+  }
 }

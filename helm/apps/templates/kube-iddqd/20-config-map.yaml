@@ -1,0 +1,18 @@
+{{ with .Values.kubeIddqd }}
+{{- if .enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: {{ .appName }}-nginx
+  namespace: {{ .namespace }}
+
+data:
+  index.html: |
+    {{- $.Files.Get "files/kube-iddqd/index.html" | nindent 4 }}
+  nginx.conf: |
+    {{- $.Files.Get "files/kube-iddqd/nginx.conf" | nindent 4 }}
+
+{{- end }}
+{{- end }}

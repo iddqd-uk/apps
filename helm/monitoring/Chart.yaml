@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://json.schemastore.org/chart.json
+
+apiVersion: v2
+name: system
+description: A Helm chart for monitoring the system
+
+version: 0.1.0
+icon: https://avatars.githubusercontent.com/u/110490746
+
+dependencies:
+  - name: nri-bundle
+    version: 5.0.107
+    repository: https://newrelic.github.io/helm-charts

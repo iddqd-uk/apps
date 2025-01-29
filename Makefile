@@ -13,7 +13,7 @@ help: ## Display a list of available commands with descriptions
 # --- CODE GENERATION -------------------------------------------------------------------------------------------------
 
 kubeconfig.yaml: ## Generate a kubeconfig.yaml file with cluster credentials
-	@test -f ./kubeconfig.yaml && rm -f ./kubeconfig.yaml # due to file permissions - remove existing file if present
+	@test -f ./kubeconfig.yaml && rm -f ./kubeconfig.yaml || true # due to file permissions remove existing file first
 	doppler $(DOPPLER_ARGS) secrets get --plain KUBE_CONFIG > ./kubeconfig.yaml
 	@chmod 400 ./kubeconfig.yaml # set minimal file permissions
 
@@ -23,22 +23,23 @@ helm/%/values.yaml: .FORCE ## Generate a chart values.yaml file with secrets for
 
 helm/%/charts: ## Download and install Helm chart dependencies for the specified directory
 	helm dependency update ./helm/$*/ 1>/dev/null
-	@test ! -d ./helm/$*/charts && mkdir -p ./helm/$*/charts # create an empty directory even if no dependencies installed
+	@test ! -d ./helm/$*/charts && mkdir -p ./helm/$*/charts || true # create an empty directory even if no deps installed
 
 dump.%.yaml: helm/%/charts helm/%/values.yaml ## Render the specified Helm chart into a YAML dump file
 	helm template ./helm/$* > ./dump.$*.yaml
 
 # --- LINTING & DEBUGGING ---------------------------------------------------------------------------------------------
 
-dump: dump.system.yaml dump.apps.yaml ## Render all Helm charts into YAML dump files
+dump: dump.system.yaml dump.monitoring.yaml dump.apps.yaml ## Render all Helm charts into YAML dump files
 
 lint-chart-%: helm/%/values.yaml helm/%/charts ## Perform linting on the Helm chart in the specified directory
 	helm lint --quiet --strict ./helm/$*
 	docker run --rm -t -v "$(shell pwd):/src:ro" -w "/src" ghcr.io/stackrox/kube-linter --with-color lint ./helm/$*
 
-lint-system: lint-chart-system ## Lint the system Helm chart
-lint-apps: lint-chart-apps     ## Lint the apps Helm chart
-lint: lint-system lint-apps    ## Perform linting on all charts
+lint-system: lint-chart-system              ## Lint the system Helm chart
+lint-monitoring: lint-chart-monitoring      ## Lint the monitoring Helm chart
+lint-apps: lint-chart-apps                  ## Lint the apps Helm chart
+lint: lint-system lint-monitoring lint-apps ## Perform linting on all charts
 
 git-leaks: ## Scan the repository for secrets using gitleaks
 	docker run --rm -t -v "$(shell pwd):/src:ro" ghcr.io/gitleaks/gitleaks detect --no-banner --source /src
@@ -46,15 +47,17 @@ git-leaks: ## Scan the repository for secrets using gitleaks
 # --- DEPLOYMENT ------------------------------------------------------------------------------------------------------
 
 install-chart-%: kubeconfig.yaml helm/%/values.yaml helm/%/charts ## Install the specified Helm chart
-	helm install --kubeconfig ./kubeconfig.yaml --atomic $* ./helm/$*
+	helm install --kubeconfig ./kubeconfig.yaml --atomic --create-namespace --namespace $* $* ./helm/$*
 
-install-system: lint-system install-chart-system ## Install the system components Helm chart
-install-apps: lint-apps install-chart-apps       ## Install the applications Helm chart
-install: install-system install-apps             ## Install all Helm charts (system and applications)
+install-system: lint-system install-chart-system             ## Install the system components Helm chart
+install-monitoring: lint-monitoring install-chart-monitoring ## Install the monitoring components Helm chart
+install-apps: lint-apps install-chart-apps                   ## Install the applications Helm chart
+install: install-system install-monitoring install-apps      ## Install all Helm charts
 
 upgrade-chart-%: kubeconfig.yaml helm/%/values.yaml helm/%/charts ## Upgrade the specified Helm chart
-	helm upgrade --kubeconfig ./kubeconfig.yaml --atomic $* ./helm/$*
+	helm upgrade --kubeconfig ./kubeconfig.yaml --atomic --namespace $* $* ./helm/$*
 
-upgrade-system: lint-system upgrade-chart-system ## Upgrade the system components Helm chart
-upgrade-apps: lint-apps upgrade-chart-apps       ## Upgrade the applications Helm chart
-upgrade: upgrade-system upgrade-apps             ## Upgrade all Helm charts (system and applications)
+upgrade-system: lint-system upgrade-chart-system             ## Upgrade the system components Helm chart
+upgrade-monitoring: lint-monitoring upgrade-chart-monitoring ## Upgrade the monitoring components Helm chart
+upgrade-apps: lint-apps upgrade-chart-apps                   ## Upgrade the applications Helm chart
+upgrade: upgrade-system upgrade-monitoring upgrade-apps      ## Upgrade all Helm charts

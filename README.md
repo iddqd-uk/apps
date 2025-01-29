@@ -21,3 +21,11 @@ doppler login
 
 Next, you may use all the available commands in the `Makefile` to deploy the cluster. For the first deployment, you
 need to use the `make install`, any future deployment can be done with `make upgrade-system` or `make upgrade-apps`.
+
+> [!NOTE]
+>
+> The order of installation is important:
+>
+> 1. `system`
+> 2. `monitoring`
+> 3. `apps`

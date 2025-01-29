@@ -1,0 +1,20 @@
+{{ with .Values.tgProxy }}
+{{- if .enabled }}
+apiVersion: v1
+kind: Service
+
+metadata:
+  name: {{ .appName }}-service
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+
+spec:
+  type: ClusterIP
+  selector: {app: "{{ .appName }}"}
+  ports:
+    - name: "{{ .appName }}-tcp-port"
+      protocol: TCP
+      port: 443
+      targetPort: 443
+{{- end }}
+{{- end }}
