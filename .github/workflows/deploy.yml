@@ -20,7 +20,7 @@ on:
         default: apps
 
 concurrency:
-  group: ${{ github.ref }}-helm-deploy
+  group: ${{ github.ref }}-helm-deploy-${{ inputs.chart }}
   cancel-in-progress: false
 
 jobs:
