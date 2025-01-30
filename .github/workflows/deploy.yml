@@ -30,7 +30,7 @@ jobs:
     environment: Production
     defaults: {run: {working-directory: "./helm/${{ inputs.chart }}"}}
     env:
-      KUBECONFIG: ${{ runner.workspace }}/kubeconfig.yaml
+      KUBECONFIG: ~/kubeconfig.yaml
     steps:
       - uses: actions/checkout@v4
       - uses: dopplerhq/cli-action@v3
@@ -38,6 +38,7 @@ jobs:
       - uses: azure/setup-helm@v4
       - run: |
           doppler --no-check-version secrets get --plain KUBE_CONFIG > $KUBECONFIG
+          chmod 400 $KUBECONFIG
           doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
         env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
       - run: helm dependency update .
