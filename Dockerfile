@@ -8,10 +8,6 @@
 
 FROM docker.io/library/alpine:3.21
 
-# install common tools & packages
-RUN set -x \
-    && apk add --no-cache make
-
 # install kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 RUN set -x \
     # renovate: source=github-releases name=kubernetes/kubernetes
