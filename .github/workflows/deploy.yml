@@ -13,36 +13,38 @@ on:
         options: [install, upgrade]
         default: upgrade
       chart:
-        description: 'Chart to deploy'
+        description: 'Chart to deploy ("install" order is important - "system", "monitoring", "apps")'
         required: true
         type: choice
         options: [system, monitoring, apps]
         default: apps
 
 concurrency:
-  group: ${{ github.ref }}-helm-deploy
+  group: ${{ github.ref }}-helm-deploy-${{ inputs.chart }}
   cancel-in-progress: false
 
 jobs:
   deploy:
-    name: Deploy the chart
+    name: Deploy the ${{ inputs.chart }} chart
     runs-on: ubuntu-latest
     environment: Production
     defaults: {run: {working-directory: "./helm/${{ inputs.chart }}"}}
+    env: {KUBECONFIG: /tmp/kubeconfig.yaml}
     steps:
       - uses: actions/checkout@v4
       - uses: dopplerhq/cli-action@v3
       - uses: azure/setup-kubectl@v4
       - uses: azure/setup-helm@v4
       - run: |
-          doppler --no-check-version secrets get --plain KUBE_CONFIG > ./kubeconfig.yaml
+          doppler --no-check-version secrets get --plain KUBE_CONFIG > $KUBECONFIG
+          chmod 400 $KUBECONFIG
           doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
         env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
       - run: helm dependency update .
-      - run: >
-          helm ${{ inputs.action }}
-            --kubeconfig ./kubeconfig.yaml
-            --namespace ${{ inputs.chart }}
-            --atomic
-            --create-namespace
+      - run: |
+          helm ${{ inputs.action }} \
+            --namespace ${{ inputs.chart }} \
+            --atomic \
+            --create-namespace \
             ${{ inputs.chart }} .
+      - {name: Cleanup, if: always(), run: rm -f $KUBECONFIG ./values.yaml}

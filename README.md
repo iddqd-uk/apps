@@ -6,26 +6,22 @@
 
 This repository contains the configuration and deployment scripts for a K3s cluster.
 
-## Prerequisites
+## Managing the Cluster
 
-- [Helm](https://helm.sh/)
-- [Doppler](https://www.doppler.com/)
-- [Docker](https://www.docker.com/) (optional, for local development)
+To manage the cluster, ensure that `make` and `docker` are installed on your machine. The required tools for
+deployment are listed in the [Dockerfile](Dockerfile), but since everything is containerized, there is no need
+to install them locally.
 
-First of all, you need to [authenticate the doppler CLI](https://docs.doppler.com/docs/cli#authentication) with
-your account:
+Before you begin, obtain a new token (or reuse an existing one) from the [Doppler](https://www.doppler.com/)
+dashboard associated with this project. Add the token to the `.env` file (you can refer to the `.env.example`
+file for guidance), and you will be ready to go.
 
-```sh
-doppler login
-````
-
-Next, you may use all the available commands in the `Makefile` to deploy the cluster. For the first deployment, you
-need to use the `make install`, any future deployment can be done with `make upgrade-system` or `make upgrade-apps`.
+You can use all available commands in the `Makefile` to manage the cluster. For the initial deployment,
+use `make install(-*)`, and for subsequent deployments, use `make upgrade(-*)`.
 
 > [!NOTE]
+> The installation order is important:
 >
-> The order of installation is important:
->
-> 1. `system`
-> 2. `monitoring`
-> 3. `apps`
+> 1. `system` (contains essential configurations and CRDs)
+> 2. `monitoring` (manages monitoring and logging)
+> 3. `apps` (includes all applications running on the cluster)
