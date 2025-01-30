@@ -15,7 +15,7 @@ RUN set -x \
 # install kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 RUN set -x \
     # renovate: source=github-releases name=kubernetes/kubernetes
-    && KUBECTL_VERSION="1.32.0" \
+    && KUBECTL_VERSION="1.32.1" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) KUBECTL_ARCH="amd64" ;; \
