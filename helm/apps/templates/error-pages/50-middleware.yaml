@@ -1,0 +1,16 @@
+{{ with .Values.errorPages }}
+{{- if .enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+
+spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-middleware
+  errors:
+    status: ["401", "403", "404", "500-599"]
+    service: {name: "{{ .appName }}-service", port: 8080}
+    query: "/{status}.html"
+{{- end }}
+{{- end }}

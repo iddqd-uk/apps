@@ -6,7 +6,8 @@
 traefik:
   namespaceOverride: ingress
   nodeSelector: {node/role: master}
-  #ingressRoute: {dashboard: {enabled: true}} # enable the Traefik dashboard on the traefik endpoint
+  # enable the Traefik dashboard on the traefik endpoint at http://<traefik>:8080/dashboard/
+  #ingressRoute: {dashboard: {enabled: true}}
   ports:
     3proxy-http:
       port: !!int {{ .HTTP_PROXY_PORT }}
@@ -33,7 +34,9 @@ traefik:
           resolvers: ["1.0.0.1:53", "1.1.1.1:53", "8.8.8.8:53"]
   env:
     - {name: CF_DNS_API_TOKEN, value: "{{ .LETSENCRYPT_CLOUDFLARE_TOKEN }}"} # Cloudflare API token
-  globalArguments: [] # disable `checknewversion` and `sendanonymoususage`
+  globalArguments:
+    # in Traefik >=2.5, cross-namespace references for resources like middlewares are restricted by default
+    - --providers.kubernetescrd.allowCrossNamespace=true
   logs:
     general: {format: json} # log in JSON format
     access: {enabled: false} # disable access logs

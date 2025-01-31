@@ -35,6 +35,14 @@ kubeIddqd: # this is the just an example of the configuration to expose http ser
   namespace: kube-iddqd
   nginx: {image: ghcr.io/nginxinc/nginx-unprivileged, tag: 1.27-alpine}
 
+errorPages:
+  enabled: true
+  appName: error-pages
+  namespace: error-pages
+  # renovate: source=github-releases name=tarampampam/error-pages
+  version: 3.3.1
+  themeName: shuffle
+
 doppler:
   enabled: true
   serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"

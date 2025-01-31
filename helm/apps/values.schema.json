@@ -151,6 +151,36 @@
       "required": ["enabled", "appName", "namespace", "nginx"]
     },
 
+    "errorPages": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "appName": {
+          "type": "string",
+          "minLength": 1,
+          "examples": ["app-name"]
+        },
+        "namespace": {
+          "type": "string",
+          "examples": ["app-namespace"]
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1,
+          "examples": ["2.0.0-alpha.13"],
+          "description": "The version to deploy (https://github.com/tarampampam/error-pages/releases)"
+        },
+        "themeName": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["enabled", "appName", "namespace", "version", "themeName"],
+      "additionalProperties": false
+    },
+
     "doppler": {
       "type": "object",
       "properties": {
