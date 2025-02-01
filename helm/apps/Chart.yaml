@@ -6,3 +6,9 @@ description: A Helm chart for all the apps
 
 version: 0.1.0
 icon: https://avatars.githubusercontent.com/u/110490746
+
+dependencies:
+  - name: webhook-tester
+    alias: webhookTester
+    version: 2.1.0-rc1
+    repository: https://tarampampam.github.io/webhook-tester/helm-charts

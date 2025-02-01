@@ -43,6 +43,16 @@ errorPages:
   version: 3.3.1
   themeName: shuffle
 
+webhookTester:
+  nameOverride: webhook-tester
+  namespaceOverride: webhook-tester
+  service: {type: ClusterIP} # TODO: remove once updated to the latest version of the chart
+  config:
+    limits:
+      sessionTTL: 5h
+      maxRequests: 32
+      maxRequestBodySize: 156672
+
 doppler:
   enabled: true
   serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"

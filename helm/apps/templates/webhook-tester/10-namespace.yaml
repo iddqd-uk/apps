@@ -1,0 +1,6 @@
+{{ with .Values.webhookTester }}
+apiVersion: v1
+kind: Namespace
+
+metadata: {name: "{{ .namespaceOverride }}"}
+{{- end }}

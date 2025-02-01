@@ -1,0 +1,17 @@
+{{ with .Values.webhookTester }}
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+
+metadata:
+  name: {{ .nameOverride }}
+  namespace: {{ .namespaceOverride }}
+
+spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-ingressroute
+  entryPoints: [websecure]
+  routes:
+    - match: Host(`wh.iddqd.uk`) && PathPrefix(`/`)
+      services:
+        - name: "{{ $.Release.Name }}-{{ .nameOverride }}"
+          namespace: {{ .namespaceOverride }}
+          port: {{ .service.port }}
+{{- end }}
