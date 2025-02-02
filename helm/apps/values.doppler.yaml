@@ -3,15 +3,40 @@
 # {{    print "To make changes, update the `values.doppler.yaml` file instead."    }}
 # {{/* Use the Doppler `secrets substitute` command to generate the result file. */}}
 
-httpProxy:
+doppler:
   enabled: true
-  appName: proxy-3proxy
-  namespace: proxy-3proxy
-  # renovate: source=github-releases name=tarampampam/3proxy-docker
-  version: 1.10.0 # https://github.com/tarampampam/3proxy-docker/releases
-  replicaCount: 2
-  dns: {primaryResolver: 77.88.8.8, secondaryResolver: 8.8.8.8}
-  logs: {disabled: false}
+  serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"
+  secrets: # the list of secrets is stored in Doppler and should be used as a reference (update it manually as needed)
+    httpProxyLogin: &httpProxyLogin HTTP_PROXY_LOGIN
+    httpProxyPassword: &httpProxyPassword HTTP_PROXY_PASSWORD
+    httpProxyPort: HTTP_PROXY_PORT
+    tgProxySecret: TG_PROXY_SECRET
+    tgRssBotAuthToken: TG_RSS_BOT_AUTH_TOKEN
+    tgRssBotAdminID: TG_RSS_BOT_ADMIN_ID
+
+httpProxy:
+  nameOverride: proxy-3proxy
+  namespaceOverride: proxy-3proxy
+  deployment:
+    replicas: 2
+    resources:
+      limits: {memory: 128Mi, cpu: 800m}
+      requests: {memory: 16Mi, cpu: 200m}
+    affinity:
+      nodeAffinity: &preferWorkersButAllowMaster
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 10 # scheduler prefers placing pods on worker nodes
+            preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions: # allows the pod to be scheduled on either the worker or master node
+              - {key: node/role, operator: In, values: [worker, master]}
+  config:
+    log: {enabled: false}
+    auth:
+      login: {fromSecret: {enabled: true, secretName: proxy-3proxy-secrets, secretKey: *httpProxyLogin}}
+      password: {fromSecret: {enabled: true, secretName: proxy-3proxy-secrets, secretKey: *httpProxyPassword}}
+    dns: {primaryResolver: 77.88.8.8, secondaryResolver: 8.8.8.8}
 
 tgProxy:
   enabled: true
@@ -52,14 +77,3 @@ webhookTester:
       sessionTTL: 5h
       maxRequests: 32
       maxRequestBodySize: 156672
-
-doppler:
-  enabled: true
-  serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"
-  secrets: # the list of secrets is stored in Doppler and should be used as a reference (update it manually as needed)
-    httpProxyLogin: HTTP_PROXY_LOGIN
-    httpProxyPassword: HTTP_PROXY_PASSWORD
-    httpProxyPort: HTTP_PROXY_PORT
-    tgProxySecret: TG_PROXY_SECRET
-    tgRssBotAuthToken: TG_RSS_BOT_AUTH_TOKEN
-    tgRssBotAdminID: TG_RSS_BOT_ADMIN_ID
