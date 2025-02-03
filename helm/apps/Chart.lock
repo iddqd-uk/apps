@@ -4,6 +4,9 @@ dependencies:
   version: 2.1.0
 - name: proxy-3proxy
   repository: https://tarampampam.github.io/3proxy-docker/helm-charts
-  version: 1.11.0
-digest: sha256:10c3a38672b38df1d3ff2b076e0e824a26e4fcbc6fbd076263888ba00454c54a
-generated: "2025-02-02T14:55:52.123063069Z"
+  version: 1.11.1
+- name: rssbot
+  repository: https://tarampampam.github.io/rssbot-docker/helm-charts
+  version: 1.0.0
+digest: sha256:f1ff48129428fc4528400d0eb7d70e6e8b8f792f3e329803d356da0ea3427d5d
+generated: "2025-02-03T20:50:11.888344082+04:00"

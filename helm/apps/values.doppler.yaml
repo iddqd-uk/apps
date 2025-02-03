@@ -11,8 +11,19 @@ doppler:
     httpProxyPassword: &httpProxyPassword HTTP_PROXY_PASSWORD
     httpProxyPort: HTTP_PROXY_PORT
     tgProxySecret: TG_PROXY_SECRET
-    tgRssBotAuthToken: TG_RSS_BOT_AUTH_TOKEN
-    tgRssBotAdminID: TG_RSS_BOT_ADMIN_ID
+    tgRssBotAuthToken: &tgRssBotAuthToken TG_RSS_BOT_AUTH_TOKEN
+    tgRssBotAdminID: &tgRssBotAdminID TG_RSS_BOT_ADMIN_ID
+
+# This is template for the node affinity configuration, that allows the pod to be scheduled on either the worker or
+# master node, but prefers the worker node
+.preferWorkersButAllowMaster: &preferWorkersButAllowMaster
+  preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 10 # scheduler prefers placing pods on worker nodes
+      preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
+  requiredDuringSchedulingIgnoredDuringExecution:
+    nodeSelectorTerms:
+      - matchExpressions: # allows the pod to be scheduled on either the worker or master node
+          - {key: node/role, operator: In, values: [worker, master]}
 
 httpProxy:
   nameOverride: proxy-3proxy
@@ -22,15 +33,7 @@ httpProxy:
     resources:
       limits: {memory: 128Mi, cpu: 800m}
       requests: {memory: 16Mi, cpu: 200m}
-    affinity:
-      nodeAffinity: &preferWorkersButAllowMaster
-        preferredDuringSchedulingIgnoredDuringExecution:
-          - weight: 10 # scheduler prefers placing pods on worker nodes
-            preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
-        requiredDuringSchedulingIgnoredDuringExecution:
-          nodeSelectorTerms:
-            - matchExpressions: # allows the pod to be scheduled on either the worker or master node
-              - {key: node/role, operator: In, values: [worker, master]}
+    affinity: {nodeAffinity: *preferWorkersButAllowMaster}
   config:
     log: {enabled: false}
     auth:
@@ -48,11 +51,19 @@ tgProxy:
   replicaCount: 1
 
 tgRssBot:
-  enabled: true
-  appName: tg-rss-bot
-  namespace: tg-rss-bot
-  # TODO: add renovate configuration
-  version: 2.0.0-alpha-13 # https://github.com/tarampampam/rssbot-docker/releases
+  nameOverride: tg-rss-bot
+  namespaceOverride: tg-rss-bot
+  deployment:
+    affinity: {nodeAffinity: *preferWorkersButAllowMaster}
+    volumes: [{name: app-data, persistentVolumeClaim: {claimName: tg-rss-bot-pvc}}]
+    volumeMounts: [{name: app-data, mountPath: /data}]
+    env:
+      - name: ADMIN_ID
+        valueFrom: {secretKeyRef: {name: tg-rss-bot-secrets, key: *tgRssBotAdminID}}
+    args: [--admin, $(ADMIN_ID)]
+  config:
+    dbFilePath: /data/rss-bot.json
+    botToken: {fromSecret: {enabled: true, secretName: tg-rss-bot-secrets, secretKey: *tgRssBotAuthToken}}
 
 kubeIddqd: # this is the just an example of the configuration to expose http service over the Ingress with TLS
   enabled: true

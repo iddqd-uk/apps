@@ -37,32 +37,6 @@
       "required": ["enabled", "appName", "namespace", "version", "replicaCount"],
       "additionalProperties": false
     },
-    "tgRssBot": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "appName": {
-          "type": "string",
-          "minLength": 1,
-          "examples": ["tg-rss-bot"]
-        },
-        "namespace": {
-          "type": "string",
-          "examples": ["app-namespace"]
-        },
-        "version": {
-          "type": "string",
-          "minLength": 1,
-          "examples": ["2.0.0-alpha.13"],
-          "description": "The version to deploy (https://github.com/tarampampam/rssbot-docker/releases)"
-        }
-      },
-      "required": ["enabled", "appName", "namespace", "version"],
-      "additionalProperties": false
-    },
-
     "kubeIddqd": {
       "type": "object",
       "properties": {
@@ -156,5 +130,5 @@
       "additionalProperties": false
     }
   },
-  "required": ["tgProxy", "tgRssBot", "doppler"]
+  "required": ["tgProxy", "doppler"]
 }

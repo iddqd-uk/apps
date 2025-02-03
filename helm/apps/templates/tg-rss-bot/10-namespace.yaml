@@ -1,8 +1,6 @@
 {{ with .Values.tgRssBot }}
-{{- if .enabled }}
 apiVersion: v1
 kind: Namespace
 
-metadata: {name: "{{ .namespace }}"}
-{{- end }}
+metadata: {name: "{{ .namespaceOverride }}"}
 {{- end }}
