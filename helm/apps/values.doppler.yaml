@@ -77,7 +77,7 @@ kubeIddqd:
   namespace: kube-iddqd
   nginx:
     image: ghcr.io/nginxinc/nginx-unprivileged
-    # renovate: source=docker name=ghcr.io/nginxinc/nginx-unprivileged
+    # renovate: source=docker name=ghcr.io/nginxinc/nginx-unprivileged versioning=regex:^(?<major>\d+)_(?<minor>\d+)-.*$
     tag: 1.26-alpine
 
 errorPages: # https://github.com/tarampampam/error-pages
