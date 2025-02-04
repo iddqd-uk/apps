@@ -52,6 +52,6 @@ spec:
           configMap: {name: "{{ .appName }}-nginx"}
       affinity:
         nodeAffinity:
-          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+          {{- toYaml $.Values.common.preferWorkersButAllowMaster | nindent 10 }}
 {{- end }}
 {{- end }}

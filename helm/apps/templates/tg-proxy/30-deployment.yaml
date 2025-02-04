@@ -41,12 +41,18 @@ spec:
             readOnlyRootFilesystem: true
           ports:
             - {name: tg-proxy-port, containerPort: 443, protocol: TCP}
-          {{- include "healthcheck.tcpPortProbes" 443 | nindent 10 }}
+          livenessProbe:
+            tcpSocket: {port: 443}
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            tcpSocket: {port: 443}
+            periodSeconds: 10
           resources:
             requests: {memory: 64Mi, cpu: 200m}
             limits: {memory: 256Mi, cpu: 550m}
       affinity:
         nodeAffinity:
-          {{- include "nodeAffinity.preferWorkersButAllowMaster" . | nindent 10 }}
+          {{- toYaml $.Values.common.preferWorkersButAllowMaster | nindent 10 }}
 {{- end }}
 {{- end }}

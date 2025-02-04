@@ -10,8 +10,8 @@ icon: https://avatars.githubusercontent.com/u/110490746
 dependencies:
   - name: webhook-tester
     alias: webhookTester
-    version: 2.1.0
     # renovate: source=github-releases name=tarampampam/webhook-tester
+    version: 2.1.0
     repository: https://tarampampam.github.io/webhook-tester/helm-charts
 
   - name: proxy-3proxy

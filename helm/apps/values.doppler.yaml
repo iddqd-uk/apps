@@ -3,10 +3,13 @@
 # {{    print "To make changes, update the `values.doppler.yaml` file instead."    }}
 # {{/* Use the Doppler `secrets substitute` command to generate the result file. */}}
 
+# Settings for the Doppler secrets substitution
 doppler:
   enabled: true
-  serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}"
-  secrets: # the list of secrets is stored in Doppler and should be used as a reference (update it manually as needed)
+  serviceToken: "{{ .DOPPLER_K8S_SERVICE_TOKEN }}" # the secret will be substituted by Doppler CLI
+  secrets:
+    # the list of secrets is stored in Doppler and should be used as a reference (update it manually
+    # as needed)
     httpProxyLogin: &httpProxyLogin HTTP_PROXY_LOGIN
     httpProxyPassword: &httpProxyPassword HTTP_PROXY_PASSWORD
     httpProxyPort: HTTP_PROXY_PORT
@@ -14,18 +17,20 @@ doppler:
     tgRssBotAuthToken: &tgRssBotAuthToken TG_RSS_BOT_AUTH_TOKEN
     tgRssBotAdminID: &tgRssBotAdminID TG_RSS_BOT_ADMIN_ID
 
-# This is template for the node affinity configuration, that allows the pod to be scheduled on either the worker or
-# master node, but prefers the worker node
-.preferWorkersButAllowMaster: &preferWorkersButAllowMaster
-  preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 10 # scheduler prefers placing pods on worker nodes
-      preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
-  requiredDuringSchedulingIgnoredDuringExecution:
-    nodeSelectorTerms:
-      - matchExpressions: # allows the pod to be scheduled on either the worker or master node
-          - {key: node/role, operator: In, values: [worker, master]}
+# Some shared settings for the apps
+common:
+  # This is template for the node affinity configuration, that allows the pod to be scheduled on
+  # either the worker or master node, but prefers the worker node
+  preferWorkersButAllowMaster: &preferWorkersButAllowMaster
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 10 # scheduler prefers placing pods on worker nodes
+        preference: {matchExpressions: [{key: node/role, operator: In, values: [worker]}]}
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions: # allows the pod to be scheduled on either the worker or master node
+            - {key: node/role, operator: In, values: [worker, master]}
 
-httpProxy:
+httpProxy: # https://github.com/tarampampam/3proxy-docker
   nameOverride: proxy-3proxy
   namespaceOverride: proxy-3proxy
   deployment:
@@ -41,16 +46,16 @@ httpProxy:
       password: {fromSecret: {enabled: true, secretName: proxy-3proxy-secrets, secretKey: *httpProxyPassword}}
     dns: {primaryResolver: 77.88.8.8, secondaryResolver: 8.8.8.8}
 
-tgProxy:
+tgProxy: # https://github.com/9seconds/mtg/releases
   enabled: true
   appName: proxy-mtg
   namespace: proxy-mtg
   # renovate: source=github-releases name=9seconds/mtg
-  version: 2.1.7 # https://github.com/9seconds/mtg/releases
+  version: 2.1.7
   domainName: ww2.iddqd.uk # you need to regenerate the secret whenever the domain name is changed!
   replicaCount: 1
 
-tgRssBot:
+tgRssBot: # https://github.com/tarampampam/rssbot-docker
   nameOverride: tg-rss-bot
   namespaceOverride: tg-rss-bot
   deployment:
@@ -65,13 +70,14 @@ tgRssBot:
     dbFilePath: /data/rss-bot.json
     botToken: {fromSecret: {enabled: true, secretName: tg-rss-bot-secrets, secretKey: *tgRssBotAuthToken}}
 
-kubeIddqd: # this is the just an example of the configuration to expose http service over the Ingress with TLS
+# This is the just an example of the configuration to expose http service over the Ingress with TLS
+kubeIddqd:
   enabled: true
   appName: kube-iddqd
   namespace: kube-iddqd
   nginx: {image: ghcr.io/nginxinc/nginx-unprivileged, tag: 1.27-alpine}
 
-errorPages:
+errorPages: # https://github.com/tarampampam/error-pages
   enabled: true
   appName: error-pages
   namespace: error-pages
@@ -79,7 +85,7 @@ errorPages:
   version: 3.3.1
   themeName: shuffle
 
-webhookTester:
+webhookTester: # https://github.com/tarampampam/webhook-tester
   nameOverride: webhook-tester
   namespaceOverride: webhook-tester
   service: {type: ClusterIP} # TODO: remove once updated to the latest version of the chart

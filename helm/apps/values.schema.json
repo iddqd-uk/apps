@@ -2,6 +2,40 @@
   "$schema": "https://json-schema.org/draft-07/schema#",
   "type": "object",
   "properties": {
+    "doppler": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "serviceToken": {
+          "type": "string",
+          "examples": ["dp.st.dev.XXXX"]
+        },
+        "secrets": {
+          "description": "The hashmap, where key may be any string, and value is the name of the secret in Doppler",
+          "type": "object",
+          "patternProperties": {
+            "^[a-zA-Z0-9_-]+$": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "examples": ["DB_NAME", "DB_PASSWORD"]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": ["enabled"],
+      "additionalProperties": false
+    },
+    "common": {
+      "type": "object",
+      "properties": {
+        "preferWorkersButAllowMaster": {"type": "object"}
+      },
+      "required": ["preferWorkersButAllowMaster"]
+    },
     "tgProxy": {
       "type": "object",
       "properties": {
@@ -100,35 +134,7 @@
       },
       "required": ["enabled", "appName", "namespace", "version", "themeName"],
       "additionalProperties": false
-    },
-
-    "doppler": {
-      "type": "object",
-      "properties": {
-        "enabled": {
-          "type": "boolean"
-        },
-        "serviceToken": {
-          "type": "string",
-          "examples": ["dp.st.dev.XXXX"]
-        },
-        "secrets": {
-          "description": "The hashmap, where key may be any string, and value is the name of the secret in Doppler",
-          "type": "object",
-          "patternProperties": {
-            "^[a-zA-Z0-9_-]+$": {
-              "type": "string",
-              "minLength": 1,
-              "pattern": "^[a-zA-Z0-9_-]+$",
-              "examples": ["DB_NAME", "DB_PASSWORD"]
-            }
-          },
-          "additionalProperties": false
-        }
-      },
-      "required": ["enabled"],
-      "additionalProperties": false
     }
   },
-  "required": ["tgProxy", "doppler"]
+  "required": ["doppler", "common", "tgProxy"]
 }
