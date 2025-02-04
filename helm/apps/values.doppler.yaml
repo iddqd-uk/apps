@@ -75,7 +75,10 @@ kubeIddqd:
   enabled: true
   appName: kube-iddqd
   namespace: kube-iddqd
-  nginx: {image: ghcr.io/nginxinc/nginx-unprivileged, tag: 1.27-alpine}
+  nginx:
+    image: ghcr.io/nginxinc/nginx-unprivileged
+    # renovate: source=docker name=ghcr.io/nginxinc/nginx-unprivileged
+    tag: 1.27-alpine
 
 errorPages: # https://github.com/tarampampam/error-pages
   enabled: true

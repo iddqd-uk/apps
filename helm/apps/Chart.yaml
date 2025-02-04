@@ -10,18 +10,15 @@ icon: https://avatars.githubusercontent.com/u/110490746
 dependencies:
   - name: webhook-tester
     alias: webhookTester
-    # renovate: source=github-releases name=tarampampam/webhook-tester
     version: 2.1.0
     repository: https://tarampampam.github.io/webhook-tester/helm-charts
 
   - name: proxy-3proxy
     alias: httpProxy
-    # renovate: source=github-releases name=tarampampam/3proxy-docker
     version: 1.11.1
     repository: https://tarampampam.github.io/3proxy-docker/helm-charts
 
   - name: rssbot
     alias: tgRssBot
-    # renovate: source=github-releases name=tarampampam/rssbot-docker
     version: 1.0.0
     repository: https://tarampampam.github.io/rssbot-docker/helm-charts
