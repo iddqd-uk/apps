@@ -11,7 +11,7 @@ dependencies:
   - name: webhook-tester
     alias: webhookTester
     # renovate: source=github-releases name=tarampampam/webhook-tester
-    version: 2.1.0
+    version: 2.2.0
     repository: https://tarampampam.github.io/webhook-tester/helm-charts
 
   - name: proxy-3proxy
