@@ -44,7 +44,7 @@ httpProxy: # https://github.com/tarampampam/3proxy-docker
     auth:
       login: {fromSecret: {enabled: true, secretName: proxy-3proxy-secrets, secretKey: *httpProxyLogin}}
       password: {fromSecret: {enabled: true, secretName: proxy-3proxy-secrets, secretKey: *httpProxyPassword}}
-    dns: {primaryResolver: 77.88.8.8, secondaryResolver: 8.8.8.8}
+    dns: {primaryResolver: 1.1.1.1, secondaryResolver: 8.8.8.8}
 
 tgProxy: # https://github.com/9seconds/mtg/releases
   enabled: true
