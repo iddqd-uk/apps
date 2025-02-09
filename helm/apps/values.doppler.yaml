@@ -77,6 +77,12 @@ kubeIddqd:
   namespace: kube-iddqd
   nginx: {image: ghcr.io/nginxinc/nginx-unprivileged, tag: 1.27-alpine}
 
+homeIddqd:
+  enabled: true
+  appName: home-iddqd
+  namespace: home-iddqd
+  glance: {image: docker.io/glanceapp/glance, tag: v0.6.4}
+
 errorPages: # https://github.com/tarampampam/error-pages
   enabled: true
   appName: error-pages

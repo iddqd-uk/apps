@@ -1,0 +1,54 @@
+{{ with .Values.homeIddqd }}
+{{- if .enabled }}
+{{- $contentHash := include (print $.Template.BasePath "/home-iddqd/20-config-map.yaml") $ | sha256sum -}}
+
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: {{ .appName }}
+  namespace: {{ .namespace }}
+  labels: {app: "{{ .appName }}"}
+  annotations: {checksum/config: "{{ $contentHash }}"}
+
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: "{{ .appName }}"}}
+  template:
+    metadata:
+      labels: {app: "{{ .appName }}"}
+      annotations: {checksum/config: "{{ $contentHash }}"}
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: glance
+          image: "{{ .glance.image }}:{{ .glance.tag | default "latest" }}"
+          securityContext:
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+          ports:
+            - {name: http, containerPort: 8080, protocol: TCP}
+          volumeMounts:
+            - name: config-map
+              mountPath: /app/glance.yml
+              subPath: glance.yml
+              readOnly: true
+          livenessProbe:
+            httpGet: {port: http, path: /api/healthz}
+            periodSeconds: 10
+          readinessProbe:
+            httpGet: {port: http, path: /api/healthz}
+            periodSeconds: 10
+          resources:
+            limits: {memory: 64Mi, cpu: 600m}
+            requests: {memory: 16Mi, cpu: 20m}
+      volumes:
+        - name: config-map
+          configMap: {name: "{{ .appName }}-glance"}
+      affinity:
+        nodeAffinity:
+          {{- toYaml $.Values.common.preferWorkersButAllowMaster | nindent 10 }}
+{{- end }}
+{{- end }}

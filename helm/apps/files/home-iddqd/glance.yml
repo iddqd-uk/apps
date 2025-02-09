@@ -1,0 +1,100 @@
+# docs: https://github.com/glanceapp/glance/blob/main/docs/configuration.md
+
+pages:
+  - name: Home
+    hide-desktop-navigation: true
+    center-vertically: true
+    columns:
+      - size: small
+        widgets:
+          - type: clock
+            title: /now/time
+            hour-format: 12h
+            timezones: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+              - timezone: Poland
+                label: Poland
+              - timezone: Asia/Yekaterinburg
+                label: Yekaterinburg
+              - timezone: America/Denver
+                label: USA (most areas)
+          - type: bookmarks
+            title: /bookmarks
+            groups:
+              - links:
+                - title: /google/gmail
+                  icon: si:gmail
+                  hide-arrow: true
+                  url: https://mail.google.com/mail/u/0/#inbox
+                - title: /google/calendar
+                  icon: si:googlecalendar
+                  hide-arrow: true
+                  url: https://calendar.google.com/calendar/u/0/r/month
+                - title: /github/me
+                  icon: si:github
+                  hide-arrow: true
+                  url: https://github.com/tarampampam?tab=repositories
+              - title: iddqd
+                color: 10 70 50
+                links:
+                  - title: /github/apps
+                    icon: si:github
+                    hide-arrow: true
+                    url: https://github.com/iddqd-uk/apps
+                  - title: /github/infra
+                    icon: si:github
+                    hide-arrow: true
+                    url: https://github.com/iddqd-uk/infra
+                  - title: /newrelic/logs
+                    icon: si:newrelic
+                    hide-arrow: true
+                    url: https://one.eu.newrelic.com/logger?account=6394775
+
+      - size: full
+        widgets:
+          - type: search
+            title: /search
+            search-engine: duckduckgo
+            autofocus: true
+          - type: group
+            widgets:
+              - type: rss
+                title: /go/rss
+                style: horizontal-cards
+                feeds:
+                  - url: https://go.dev/blog/feed.atom?format=xml
+                    title: The Go Blog
+                  - url: https://habr.com/ru/rss/hub/go/all/?fl=ru
+                    title: Habr/Go
+              #- type: reddit
+              #  style: horizontal-cards
+              #  subreddit: golang
+              - type: rss
+                title: /go/releases
+                style: vertical-list
+                feeds: [{url: https://github.com/golang/go/releases.atom, title: Go releases}]
+                collapse-after: 3
+                single-line-titles: true
+
+          - type: videos
+            title: /videos/youtube
+            channels:
+              - UC4omkhNHsYLagT1o6hnmKQw # Winderton
+              - UCUSbYJK87rpBUJ5KGQd7oHA # Мы обречены
+              - UCe_TcJarfs-HKy3NySy8Kng # S0ER
+              - UCeObZv89Stb2xLtjLJ0De3Q # ITBeard
+              - UCJ8AJ0qd2-gk90OujUETzCg # ДЕПЛОЙ
+              - UCnxk5BzZxRN7y3a1IqHhVlA # Pingvinus
+
+      - size: small
+        widgets:
+          - type: calendar
+            title: /now/date
+          - type: weather
+            title: /outside/weather
+            hour-format: 12h
+            location: Tbilisi, Georgia
+            hide-location: true
+
+branding:
+  hide-footer: true
+  favicon-url: https://gravatar.com/avatar/68ac3bd2a8358568ab3382d7d8dbe35b?size=256

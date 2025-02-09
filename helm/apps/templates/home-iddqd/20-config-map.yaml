@@ -1,0 +1,16 @@
+{{ with .Values.homeIddqd }}
+{{- if .enabled }}
+
+apiVersion: v1
+kind: ConfigMap
+
+metadata:
+  name: {{ .appName }}-glance
+  namespace: {{ .namespace }}
+
+data:
+  glance.yml: |
+    {{- $.Files.Get "files/home-iddqd/glance.yml" | nindent 4 }}
+
+{{- end }}
+{{- end }}
