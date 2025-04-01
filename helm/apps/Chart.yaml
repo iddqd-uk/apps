@@ -15,7 +15,7 @@ dependencies:
 
   - name: proxy-3proxy
     alias: httpProxy
-    version: 1.11.1
+    version: 1.12.0
     repository: https://tarampampam.github.io/3proxy-docker/helm-charts
 
   - name: rssbot
