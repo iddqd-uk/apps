@@ -44,7 +44,7 @@ RUN set -x \
 # install doppler (https://github.com/DopplerHQ/cli)
 RUN set -x \
     # renovate: source=github-releases name=DopplerHQ/cli
-    && DOPPLER_VERSION="3.72.1" \
+    && DOPPLER_VERSION="3.73.0" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) DOPPLER_ARCH="amd64" ;; \
