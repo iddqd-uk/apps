@@ -9,5 +9,5 @@ icon: https://avatars.githubusercontent.com/u/110490746
 
 dependencies:
   - name: nri-bundle
-    version: 5.0.115
+    version: 5.0.117
     repository: https://newrelic.github.io/helm-charts
