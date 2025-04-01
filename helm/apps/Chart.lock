@@ -1,12 +1,12 @@
 dependencies:
 - name: webhook-tester
   repository: https://tarampampam.github.io/webhook-tester/helm-charts
-  version: 2.2.0
+  version: 2.2.1
 - name: proxy-3proxy
   repository: https://tarampampam.github.io/3proxy-docker/helm-charts
   version: 1.12.0
 - name: rssbot
   repository: https://tarampampam.github.io/rssbot-docker/helm-charts
   version: 1.0.0
-digest: sha256:c16a6d374487fb72381473a39be88d0426f52945bba3e3a6df990aefe7447d9f
-generated: "2025-04-01T02:19:53.053430083Z"
+digest: sha256:18b06ca8ca5ff1180785262e40cdc015ad508fc46f2f4b330d79c10c4c6107ba
+generated: "2025-04-01T13:07:22.373108226Z"
