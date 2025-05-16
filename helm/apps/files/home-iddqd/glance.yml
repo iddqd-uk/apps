@@ -5,7 +5,7 @@
 #   docker run --rm -v $(pwd):/app/config -p 8080:8080/tcp glanceapp/glance:latest # http://127.0.0.1:8080/
 
 pages:
-  - name: main()
+  - name: Home
     hide-desktop-navigation: true
     center-vertically: true
     columns:
