@@ -6,7 +6,7 @@
 
 pages:
   - name: main()
-    #hide-desktop-navigation: true
+    hide-desktop-navigation: true
     center-vertically: true
     columns:
       - size: small
