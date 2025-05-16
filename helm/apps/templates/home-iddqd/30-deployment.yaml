@@ -23,6 +23,8 @@ spec:
       containers:
         - name: glance
           image: "{{ .glance.image }}:{{ .glance.tag | default "latest" }}"
+          command: [/app/glance]
+          args: [--config, /app/glance.yml]
           securityContext:
             readOnlyRootFilesystem: true
             runAsNonRoot: true
