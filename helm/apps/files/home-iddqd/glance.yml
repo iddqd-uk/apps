@@ -1,4 +1,8 @@
 # docs: https://github.com/glanceapp/glance/blob/main/docs/configuration.md
+# icons: https://simpleicons.org/
+#
+# to test the configuration:
+#   docker run --rm -v $(pwd):/app/config -p 8080:8080/tcp glanceapp/glance:latest # http://127.0.0.1:8080/
 
 pages:
   - name: Home
@@ -9,6 +13,7 @@ pages:
         widgets:
           - type: clock
             title: /now/time
+            hide-header: true
             hour-format: 12h
             timezones: # https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
               - timezone: Poland
@@ -19,6 +24,7 @@ pages:
                 label: USA (most areas)
           - type: bookmarks
             title: /bookmarks
+            hide-header: true
             groups:
               - links:
                 - title: /google/gmail
@@ -33,26 +39,39 @@ pages:
                   icon: si:github
                   hide-arrow: true
                   url: https://github.com/tarampampam?tab=repositories
-              - title: iddqd
-                color: 10 70 50
+                - title: /github/iddqd
+                  icon: si:github
+                  hide-arrow: true
+                  url: https://github.com/iddqd-uk
+                - title: /youtube
+                  icon: si:youtube
+                  hide-arrow: true
+                  url: https://www.youtube.com/feed/subscriptions
+                - title: /habr/go
+                  icon: si:habr
+                  hide-arrow: true
+                  url: https://habr.com/en/hubs/go/articles/
+              - title: work
+                color: 40 70 50
                 links:
-                  - title: /github/apps
-                    icon: si:github
+                  - title: /ss/time-tracking
+                    icon: si:jirasoftware
                     hide-arrow: true
-                    url: https://github.com/iddqd-uk/apps
-                  - title: /github/infra
-                    icon: si:github
+                    url: https://jira.spiralscout.com/secure/Tempo.jspa#/my-work
+                  - title: /gc/jira-board
+                    icon: si:jira
                     hide-arrow: true
-                    url: https://github.com/iddqd-uk/infra
-                  - title: /newrelic/logs
-                    icon: si:newrelic
+                    url: https://goconsensus.atlassian.net/jira/software/c/projects/CNS/boards/48
+                  - title: /gc/gitlab
+                    icon: si:gitlab
                     hide-arrow: true
-                    url: https://one.eu.newrelic.com/logger?account=6394775
+                    url: https://gitlab.com/goconsensus/vets
 
       - size: full
         widgets:
           - type: search
             title: /search
+            hide-header: true
             search-engine: duckduckgo
             autofocus: true
           - type: group
@@ -77,6 +96,7 @@ pages:
 
           - type: videos
             title: /videos/youtube
+            hide-header: true
             channels:
               - UC4omkhNHsYLagT1o6hnmKQw # Winderton
               - UCUSbYJK87rpBUJ5KGQd7oHA # Мы обречены
@@ -89,12 +109,29 @@ pages:
         widgets:
           - type: calendar
             title: /now/date
+            hide-header: true
           - type: weather
             title: /outside/weather
+            hide-header: true
             hour-format: 12h
             location: Tbilisi, Georgia
             hide-location: true
+          - type: markets
+            hide-header: true
+            markets:
+              - symbol: RUB=X
+                name: $/₽
+                chart-link: https://www.google.com/search?q=USD%2FRUB+converter
+theme:
+  background-color: 0 0 17
+  primary-color: 60 5 100
 
 branding:
   hide-footer: true
   favicon-url: https://gravatar.com/avatar/68ac3bd2a8358568ab3382d7d8dbe35b?size=256
+
+auth:
+  secret-key: sp4Kw3goKmuGzvz3lo5hw9D5cZigemodOutJdRz/yhURaCIvW/bDHuqdnNpEAS+caz+XEZa/4G1337Xc+N1P9g== #gitleaks:allow
+  users:
+    kot:
+      password-hash: $2a$10$2vJgUlCMpMOkbZ4f8HEZfeHyhtkL.E648ODPWBx/YXqdFG60fe7ke

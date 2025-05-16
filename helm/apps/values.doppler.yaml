@@ -81,7 +81,7 @@ homeIddqd:
   enabled: true
   appName: home-iddqd
   namespace: home-iddqd
-  glance: {image: docker.io/glanceapp/glance, tag: v0.6.4}
+  glance: {image: docker.io/glanceapp/glance, tag: v0.8.0}
 
 errorPages: # https://github.com/tarampampam/error-pages
   enabled: true
