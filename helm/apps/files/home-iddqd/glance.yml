@@ -30,26 +30,32 @@ pages:
                 - title: /google/gmail
                   icon: si:gmail
                   hide-arrow: true
+                  same-tab: true
                   url: https://mail.google.com/mail/u/0/#inbox
                 - title: /google/calendar
                   icon: si:googlecalendar
                   hide-arrow: true
+                  same-tab: true
                   url: https://calendar.google.com/calendar/u/0/r/month
                 - title: /github/me
                   icon: si:github
                   hide-arrow: true
+                  same-tab: true
                   url: https://github.com/tarampampam?tab=repositories
                 - title: /github/iddqd
                   icon: si:github
                   hide-arrow: true
+                  same-tab: true
                   url: https://github.com/iddqd-uk
                 - title: /youtube
                   icon: si:youtube
                   hide-arrow: true
+                  same-tab: true
                   url: https://www.youtube.com/feed/subscriptions
                 - title: /habr/go
                   icon: si:habr
                   hide-arrow: true
+                  same-tab: true
                   url: https://habr.com/en/hubs/go/articles/
               - title: work
                 color: 40 70 50
@@ -57,14 +63,17 @@ pages:
                   - title: /ss/time-tracking
                     icon: si:jirasoftware
                     hide-arrow: true
+                    same-tab: true
                     url: https://jira.spiralscout.com/secure/Tempo.jspa#/my-work
                   - title: /gc/jira-board
                     icon: si:jira
                     hide-arrow: true
+                    same-tab: true
                     url: https://goconsensus.atlassian.net/jira/software/c/projects/CNS/boards/48
                   - title: /gc/gitlab
                     icon: si:gitlab
                     hide-arrow: true
+                    same-tab: true
                     url: https://gitlab.com/goconsensus/vets
 
       - size: full
