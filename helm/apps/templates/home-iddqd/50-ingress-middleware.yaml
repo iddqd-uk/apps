@@ -10,6 +10,13 @@ metadata:
 spec:
   headers:
     customResponseHeaders:
-      Content-Security-Policy: "frame-ancestors *"
+      # Explanation:
+      #  - default-src *: Allow all sources by default.
+      #  - 'unsafe-inline' and 'unsafe-eval': Allow inline scripts and dynamic eval() usage — risky but may be required by some SPA frameworks.
+      #  - data: blob:: Allow loading assets via data: URIs and blob: URLs.
+      #  - script-src *: Allow scripts from any origin.
+      #  - style-src * 'unsafe-inline': Allow styles from any origin, including inline styles.
+      #  - frame-ancestors *: Allow embedding in any iframe on any site (critical for your use case).
+      Content-Security-Policy: "default-src * 'unsafe-inline' 'unsafe-eval' data: blob:; script-src * 'unsafe-inline' 'unsafe-eval' data: blob:; style-src * 'unsafe-inline'; frame-ancestors *"
 {{- end }}
 {{- end }}
