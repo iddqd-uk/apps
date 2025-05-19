@@ -1,0 +1,15 @@
+{{ with .Values.homeIddqd }}
+{{- if .enabled }}
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+
+metadata:
+  name: {{ .appName }}-http-headers
+  namespace: {{ .namespace }}
+
+spec:
+  headers:
+    customResponseHeaders:
+      Content-Security-Policy: "frame-ancestors *"
+{{- end }}
+{{- end }}

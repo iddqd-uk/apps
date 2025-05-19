@@ -12,8 +12,12 @@ spec: # https://doc.traefik.io/traefik/routing/providers/kubernetes-crd/#kind-in
   routes:
     - match: Host(`home.iddqd.uk`)
       services: [{name: "{{ .appName }}-service", namespace: {{ .namespace }}, port: 8080}]
-      {{- with $.Values.errorPages }}{{ if .enabled }}
-      middlewares: [{name: "{{ .appName }}", namespace: "{{ .namespace }}"}]
-      {{- end }}{{ end }}
+      middlewares:
+        - name: "{{ .appName }}-http-headers"
+          namespace: "{{ .namespace }}"
+        {{- with $.Values.errorPages }}{{ if .enabled }}
+        - name: "{{ .appName }}"
+          namespace: "{{ .namespace }}"
+        {{- end }}{{ end }}
 {{- end }}
 {{- end }}
