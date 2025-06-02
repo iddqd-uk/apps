@@ -28,7 +28,7 @@ data: {dopplerTokenKey: "{{ $dopplerServiceToken | b64enc }}"}
 ---
 
 # Configuration of external-secrets.io, specifying the source from which the secrets will be fetched (Doppler provider)
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: SecretStore
 
 metadata:
@@ -47,7 +47,7 @@ spec:
 ---
 
 # ExternalSecret will fetch the secrets from the Doppler provider and store them in the K8s Secret
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 
 metadata:
