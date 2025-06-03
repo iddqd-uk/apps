@@ -22,3 +22,8 @@ dependencies:
     alias: tgRssBot
     version: 1.0.0
     repository: https://tarampampam.github.io/rssbot-docker/helm-charts
+
+  - name: video-dl-bot
+    alias: tgVideoDownloaderBot
+    version: 0.0.5
+    repository: https://tarampampam.github.io/video-dl-bot/helm-charts

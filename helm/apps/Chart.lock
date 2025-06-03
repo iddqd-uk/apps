@@ -8,5 +8,8 @@ dependencies:
 - name: rssbot
   repository: https://tarampampam.github.io/rssbot-docker/helm-charts
   version: 1.0.0
-digest: sha256:18b06ca8ca5ff1180785262e40cdc015ad508fc46f2f4b330d79c10c4c6107ba
-generated: "2025-04-01T13:07:22.373108226Z"
+- name: video-dl-bot
+  repository: https://tarampampam.github.io/video-dl-bot/helm-charts
+  version: 0.0.5
+digest: sha256:52c4457b65c3eefd5ea8491db619f9342a25c9ee744718af30dabb793489da01
+generated: "2025-06-03T20:27:59.910178584Z"

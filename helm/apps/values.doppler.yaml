@@ -16,6 +16,8 @@ doppler:
     tgProxySecret: TG_PROXY_SECRET
     tgRssBotAuthToken: &tgRssBotAuthToken TG_RSS_BOT_AUTH_TOKEN
     tgRssBotAdminID: &tgRssBotAdminID TG_RSS_BOT_ADMIN_ID
+    tgVideoDownloaderBotAuthToken: &tgVideoDownloaderBotAuthToken TG_VIDEO_DL_BOT_AUTH_TOKEN
+    tgVideoDownloaderBotCookiesFile: &tgVideoDownloaderBotCookiesFile TG_VIDEO_DL_BOT_COOKIES_FILE
 
 # Some shared settings for the apps
 common:
@@ -69,6 +71,24 @@ tgRssBot: # https://github.com/tarampampam/rssbot-docker
   config:
     dbFilePath: /data/rss-bot.json
     botToken: {fromSecret: {enabled: true, secretName: tg-rss-bot-secrets, secretKey: *tgRssBotAuthToken}}
+
+tgVideoDownloaderBot:
+  nameOverride: tg-video-dl-bot
+  namespaceOverride: tg-video-dl-bot
+  deployment:
+    volumes:
+      - name: cookies-file-secret
+        secret:
+          secretName: tg-video-dl-bot-secrets
+          items: [{key: *tgVideoDownloaderBotCookiesFile, path: cookies.txt}]
+    volumeMounts:
+      - name: cookies-file-secret
+        mountPath: /cookies.txt
+        subPath: cookies.txt
+        readOnly: true
+  config:
+    botToken: {fromSecret: {enabled: true, secretName: tg-video-dl-bot-secrets, secretKey: *tgVideoDownloaderBotAuthToken}}
+    cookiesFile: /cookies.txt
 
 # This is the just an example of the configuration to expose http service over the Ingress with TLS
 kubeIddqd:
