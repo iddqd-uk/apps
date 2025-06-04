@@ -76,6 +76,7 @@ tgVideoDownloaderBot:
   nameOverride: tg-video-dl-bot
   namespaceOverride: tg-video-dl-bot
   deployment:
+    affinity: {nodeAffinity: *preferWorkersButAllowMaster}
     volumes:
       - name: cookies-file-secret
         secret:
