@@ -34,9 +34,10 @@ traefik:
           resolvers: ["1.0.0.1:53", "1.1.1.1:53", "8.8.8.8:53"]
   env:
     - {name: CF_DNS_API_TOKEN, value: "{{ .LETSENCRYPT_CLOUDFLARE_TOKEN }}"} # Cloudflare API token
-  globalArguments:
-    # in Traefik >=2.5, cross-namespace references for resources like middlewares are restricted by default
-    - --providers.kubernetescrd.allowCrossNamespace=true
+  providers:
+    kubernetesCRD:
+      # in Traefik >=2.5, cross-namespace references for resources like middlewares are restricted by default
+      allowCrossNamespace: true
   logs:
     general: {format: json} # log in JSON format
     access: {enabled: false} # disable access logs
