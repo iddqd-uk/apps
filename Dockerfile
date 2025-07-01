@@ -28,7 +28,7 @@ RUN set -x \
 # install helm (https://github.com/helm/helm)
 RUN set -x \
     # renovate: source=github-releases name=helm/helm
-    && HELM_VERSION="3.18.0" \
+    && HELM_VERSION="3.18.3" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) HELM_ARCH="amd64" ;; \
