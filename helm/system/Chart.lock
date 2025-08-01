@@ -1,9 +1,9 @@
 dependencies:
 - name: traefik
   repository: https://helm.traefik.io/traefik
-  version: 36.1.0
+  version: 36.3.0
 - name: external-secrets
   repository: https://charts.external-secrets.io
   version: 0.18.0
-digest: sha256:e6fcd79cdd510bdf3f227794c3d370b8b74d21eb67be5d088ebd39e3f2276a62
-generated: "2025-07-01T08:34:07.270741172Z"
+digest: sha256:f4eb69797d625adae902b6bd015bb764f703d9073b55de948d404afe40d26328
+generated: "2025-08-01T02:38:40.472239519Z"
