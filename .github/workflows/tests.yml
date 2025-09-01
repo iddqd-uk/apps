@@ -31,7 +31,7 @@ jobs:
       charts: ${{ steps.filter.outputs.charts }}
       docker: ${{ steps.filter.outputs.docker }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -47,7 +47,7 @@ jobs:
     strategy: {fail-fast: false, matrix: {chart: [monitoring, system, apps]}}
     defaults: {run: {working-directory: "./helm/${{ matrix.chart }}"}}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dopplerhq/cli-action@v3
       - uses: azure/setup-helm@v4
       - run: helm dependency update .
@@ -65,7 +65,7 @@ jobs:
     needs: [filter]
     if: needs.filter.outputs.docker == 'true'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - uses: docker/build-push-action@v6
