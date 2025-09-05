@@ -49,8 +49,8 @@ spec:
             tcpSocket: {port: 443}
             periodSeconds: 10
           resources:
-            requests: {memory: 64Mi, cpu: 200m}
-            limits: {memory: 256Mi, cpu: 550m}
+            requests: {memory: 256Mi, cpu: 200m}
+            limits: {memory: 512Mi, cpu: 550m}
       affinity:
         nodeAffinity:
           {{- toYaml $.Values.common.preferWorkersButAllowMaster | nindent 10 }}
