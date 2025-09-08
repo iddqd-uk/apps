@@ -18,6 +18,8 @@ doppler:
     tgRssBotAdminID: &tgRssBotAdminID TG_RSS_BOT_ADMIN_ID
     tgVideoDownloaderBotAuthToken: &tgVideoDownloaderBotAuthToken TG_VIDEO_DL_BOT_AUTH_TOKEN
     tgVideoDownloaderBotCookiesFile: &tgVideoDownloaderBotCookiesFile TG_VIDEO_DL_BOT_COOKIES_FILE
+    miroTalkJwtKey: MIROTALK_JWT_KEY
+    miroTalkApiKeySecret: MIROTALK_API_KEY_SECRET
 
 # Some shared settings for the apps
 common:
@@ -121,3 +123,10 @@ webhookTester: # https://github.com/tarampampam/webhook-tester
       sessionTTL: 5h
       maxRequests: 32
       maxRequestBodySize: 156672
+
+miroTalk:
+  enabled: true
+  appName: mirotalk
+  namespace: mirotalk
+  image: ghcr.io/iddqd-uk/mirotalk
+  tag: 1.0.0
