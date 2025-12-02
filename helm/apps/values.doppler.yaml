@@ -105,7 +105,7 @@ errorPages: # https://github.com/tarampampam/error-pages
   appName: error-pages
   namespace: error-pages
   # renovate: source=github-releases name=tarampampam/error-pages
-  version: 3.7.0
+  version: 3.8.0
   themeName: shuffle
 
 webhookTester: # https://github.com/tarampampam/webhook-tester
