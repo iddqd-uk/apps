@@ -11,7 +11,7 @@ FROM docker.io/library/alpine:3.21
 # install kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 RUN set -x \
     # renovate: source=github-releases name=kubernetes/kubernetes
-    && KUBECTL_VERSION="1.34.1" \
+    && KUBECTL_VERSION="1.34.2" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) KUBECTL_ARCH="amd64" ;; \
