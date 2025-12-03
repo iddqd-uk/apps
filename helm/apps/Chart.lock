@@ -10,6 +10,6 @@ dependencies:
   version: 1.0.0
 - name: video-dl-bot
   repository: https://tarampampam.github.io/video-dl-bot/helm-charts
-  version: 0.2.0
-digest: sha256:1ca4b39016dc29eb733a9a952fe21a5244f9f85ef97f49120480b3177f9c1902
-generated: "2025-12-02T12:56:19.782891482Z"
+  version: 1.0.0
+digest: sha256:8f930bae2c316b3bc9d37e5583e7835fb6d1e03bf0206e94cbfee0051bf1ee35
+generated: "2025-12-02T13:03:36.106439633Z"
