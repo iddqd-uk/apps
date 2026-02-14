@@ -25,5 +25,5 @@ dependencies:
 
   - name: video-dl-bot
     alias: tgVideoDownloaderBot
-    version: 1.1.0
+    version: 1.2.0
     repository: https://tarampampam.github.io/video-dl-bot/helm-charts
