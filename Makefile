@@ -49,7 +49,7 @@ lint: lint-system lint-monitoring lint-apps ## Perform linting on all charts
 # --- DEPLOYMENT ------------------------------------------------------------------------------------------------------
 
 install-chart-%: .kube/config helm/%/values.yaml helm/%/charts ## Install the specified Helm chart
-	$(IN_DOCKER) helm install --atomic --create-namespace --namespace $* $* ./helm/$*
+	$(IN_DOCKER) helm install --rollback-on-failure --create-namespace --namespace $* $* ./helm/$*
 
 install-system: lint-system install-chart-system             ## Install the system components Helm chart
 install-monitoring: lint-monitoring install-chart-monitoring ## Install the monitoring components Helm chart
@@ -57,7 +57,7 @@ install-apps: lint-apps install-chart-apps                   ## Install the appl
 install: install-system install-monitoring install-apps      ## Install all Helm charts
 
 upgrade-chart-%: .kube/config helm/%/values.yaml helm/%/charts ## Upgrade the specified Helm chart
-	$(IN_DOCKER) helm upgrade --atomic --namespace $* $* ./helm/$*
+	$(IN_DOCKER) helm upgrade --rollback-on-failure --namespace $* $* ./helm/$*
 
 upgrade-system: lint-system upgrade-chart-system             ## Upgrade the system components Helm chart
 upgrade-monitoring: lint-monitoring upgrade-chart-monitoring ## Upgrade the monitoring components Helm chart

@@ -44,7 +44,7 @@ jobs:
       - run: |
           helm ${{ inputs.action }} \
             --namespace ${{ inputs.chart }} \
-            --atomic \
+            --rollback-on-failure \
             --create-namespace \
             ${{ inputs.chart }} .
       - {name: Cleanup, if: always(), run: rm -f $KUBECONFIG ./values.yaml}
