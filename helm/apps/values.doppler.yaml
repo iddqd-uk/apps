@@ -55,7 +55,7 @@ tgProxy: # https://github.com/9seconds/mtg/releases
   appName: proxy-mtg
   namespace: proxy-mtg
   # renovate: source=github-releases name=9seconds/mtg
-  version: 2.1.7
+  version: 2.1.10
   domainName: ww2.iddqd.uk # you need to regenerate the secret whenever the domain name is changed!
   replicaCount: 1
 
