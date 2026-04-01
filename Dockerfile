@@ -60,7 +60,7 @@ RUN set -x \
 # install kube-linter (https://github.com/stackrox/kube-linter)
 RUN set -x \
     # renovate: source=github-releases name=stackrox/kube-linter
-    && KUBE_LINTER_VERSION="0.8.1" \
+    && KUBE_LINTER_VERSION="0.8.3" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) KUBE_LINTER_ARCH="" ;; \
