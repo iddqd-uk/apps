@@ -32,9 +32,9 @@ jobs:
     env: {KUBECONFIG: /tmp/kubeconfig.yaml}
     steps:
       - uses: actions/checkout@v6
-      - uses: dopplerhq/cli-action@v3
-      - uses: azure/setup-kubectl@v4
-      - uses: azure/setup-helm@v4
+      - uses: dopplerhq/cli-action@v4
+      - uses: azure/setup-kubectl@v5
+      - uses: azure/setup-helm@v5
       - run: |
           doppler --no-check-version secrets get --plain KUBE_CONFIG > $KUBECONFIG
           chmod 400 $KUBECONFIG
