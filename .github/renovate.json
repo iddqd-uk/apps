@@ -4,5 +4,9 @@
     "github>iddqd-uk/.github//renovate/default",
     ":rebaseStalePrs"
   ],
-  "schedule": ["monthly"]
+  "schedule": ["monthly"],
+  "enabledManagers": [
+    "custom.regex",
+    "helm-values"
+  ]
 }
