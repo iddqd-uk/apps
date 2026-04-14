@@ -13,10 +13,10 @@ on:
         options: [install, upgrade]
         default: upgrade
       chart:
-        description: 'Chart to deploy ("install" order is important - "system", "monitoring", "apps")'
+        description: 'Chart to deploy (install order matters: system → monitoring → apps)'
         required: true
         type: choice
-        options: [system, monitoring, apps]
+        options: [system, monitoring, apps, all]
         default: apps
 
 concurrency:
@@ -28,23 +28,30 @@ jobs:
     name: Deploy the ${{ inputs.chart }} chart
     runs-on: ubuntu-latest
     environment: Production
-    defaults: {run: {working-directory: "./helm/${{ inputs.chart }}"}}
     env: {KUBECONFIG: /tmp/kubeconfig.yaml}
     steps:
       - uses: actions/checkout@v6
       - uses: dopplerhq/cli-action@v4
       - uses: azure/setup-kubectl@v5
       - uses: azure/setup-helm@v5
-      - run: |
+
+      - name: Setup kubeconfig
+        run: |
           doppler --no-check-version secrets get --plain KUBE_CONFIG > $KUBECONFIG
           chmod 400 $KUBECONFIG
-          doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
         env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
-      - run: helm dependency update .
-      - run: |
-          helm ${{ inputs.action }} \
-            --namespace ${{ inputs.chart }} \
-            --rollback-on-failure \
-            --create-namespace \
-            ${{ inputs.chart }} .
-      - {name: Cleanup, if: always(), run: rm -f $KUBECONFIG ./values.yaml}
+
+      - name: Deploy
+        run: |
+          for chart in system monitoring apps; do
+            [[ "${{ inputs.chart }}" != "all" && "${{ inputs.chart }}" != "$chart" ]] && continue
+            cd "$GITHUB_WORKSPACE/helm/$chart"
+            doppler --no-check-version secrets substitute ./values.doppler.yaml > ./values.yaml
+            helm dependency update .
+            helm ${{ inputs.action }} --namespace "$chart" --rollback-on-failure --create-namespace "$chart" .
+          done
+        env: {DOPPLER_TOKEN: "${{ secrets.DOPPLER_SERVICE_TOKEN }}"}
+
+      - name: Cleanup
+        if: always()
+        run: rm -f $KUBECONFIG helm/*/values.yaml
