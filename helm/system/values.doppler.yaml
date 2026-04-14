@@ -14,9 +14,9 @@ traefik:
       protocol: TCP
       expose: {default: true}
     web:
-      redirections: {entryPoint: {to: websecure, scheme: https}} # redirect HTTP to HTTPS
+      http: {redirections: {entryPoint: {to: websecure, scheme: https}}} # redirect HTTP to HTTPS
     websecure:
-      tls: {certResolver: letsencrypt} # use configured below certificates resolver for HTTPS
+      http: {tls: {certResolver: letsencrypt}} # use configured below certificates resolver for HTTPS
   persistence:
     enabled: true
     name: certs
