@@ -7,15 +7,6 @@
   "schedule": ["monthly"],
   "enabledManagers": [
     "helm-values",
-    "helmv3",
     "custom.regex"
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["video-dl-bot"],
-      "minimumReleaseAge": "0 days",
-      "prNotPendingHours": 0,
-      "schedule": ["at any time"]
-    }
   ]
 }
