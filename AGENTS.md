@@ -83,8 +83,8 @@ Linting skips checks for third-party chart templates (configured in `.kube-linte
 
 Before modifying any `.github/workflows/*.yml` files:
 
-1. Fetch and read the workflow syntax reference: `https://docs.github.com/api/article/body?pathname=/en/actions/reference/workflows-and-actions/workflow-syntax`
-2. All workflow files use the JSON schema: `https://json.schemastore.org/github-workflow.json`
+1. Fetch and read the workflow syntax reference: https://docs.github.com/api/article/body?pathname=/en/actions/reference/workflows-and-actions/workflow-syntax
+2. All workflow files use the JSON schema: https://json.schemastore.org/github-workflow.json
 
 ## Dependency updates
 
