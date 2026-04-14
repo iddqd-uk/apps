@@ -12,6 +12,9 @@
 ## 3rd party charts
 /helm/*/charts/
 
+## AI shit
+.claude/
+
 ## Temp dirs & trash
 temp/
 tmp/

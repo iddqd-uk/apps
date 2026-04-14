@@ -25,3 +25,7 @@ use `make install(-*)`, and for subsequent deployments, use `make upgrade(-*)`.
 > 1. `system` (contains essential configurations and CRDs)
 > 2. `monitoring` (manages monitoring and logging)
 > 3. `apps` (includes all applications running on the cluster)
+
+## 🤖 AI Agent Instructions
+
+See [AGENTS.md](AGENTS.md) for detailed guidelines for AI agents working with this repository.
