@@ -19,10 +19,18 @@ updates:
     assignees: [tarampampam]
 
   - package-ecosystem: helm
+    directories: [/helm/apps]
+    schedule: {interval: daily, time: '02:00', timezone: 'Etc/UTC'}
+    allow: [{dependency-name: "video-dl-bot"}]
+    assignees: [tarampampam]
+
+  - package-ecosystem: helm
     directories:
       - /helm/apps
       - /helm/monitoring
       - /helm/system
     schedule: {interval: monthly, time: '02:00', timezone: 'Etc/UTC'}
+    cooldown: {default-days: 2}
+    ignore: [{dependency-name: "video-dl-bot"}]
     groups: {helm: {patterns: ['*']}}
     assignees: [tarampampam]
