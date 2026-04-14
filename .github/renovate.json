@@ -6,7 +6,8 @@
   ],
   "schedule": ["monthly"],
   "enabledManagers": [
-    "custom.regex",
-    "helm-values"
+    "helm-values",
+    "helmv3",
+    "custom.regex"
   ]
 }
