@@ -11,7 +11,7 @@ FROM docker.io/library/alpine:3.21
 # install kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 RUN set -x \
     # renovate: source=github-releases name=kubernetes/kubernetes
-    && KUBECTL_VERSION="1.35.3" \
+    && KUBECTL_VERSION="1.36.0" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) KUBECTL_ARCH="amd64" ;; \
@@ -28,7 +28,7 @@ RUN set -x \
 # install helm (https://github.com/helm/helm)
 RUN set -x \
     # renovate: source=github-releases name=helm/helm
-    && HELM_VERSION="4.1.3" \
+    && HELM_VERSION="4.1.4" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) HELM_ARCH="amd64" ;; \
@@ -44,7 +44,7 @@ RUN set -x \
 # install doppler (https://github.com/DopplerHQ/cli)
 RUN set -x \
     # renovate: source=github-releases name=DopplerHQ/cli
-    && DOPPLER_VERSION="3.75.3" \
+    && DOPPLER_VERSION="3.76.0" \
     && APK_ARCH="$(apk --print-arch)" \
     && case "${APK_ARCH}" in \
         x86_64) DOPPLER_ARCH="amd64" ;; \
