@@ -1,6 +1,6 @@
 dependencies:
 - name: nri-bundle
   repository: https://newrelic.github.io/helm-charts
-  version: 7.0.6
-digest: sha256:fe67ba6591bfbe650902f0e0e4f216be65e34c090803c2c2d00d4a6e3809fb93
-generated: "2026-05-01T02:26:46.565811649Z"
+  version: 7.0.12
+digest: sha256:1564f46eda71316e16fb9fd1665ad5730be84a5b212767402c3f03c9cd33bedf
+generated: "2026-06-01T03:53:57.082571978Z"
