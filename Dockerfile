@@ -6,7 +6,7 @@
 ## Docker image.                                                                                               ##
 #################################################################################################################
 
-FROM docker.io/library/alpine:3.21
+FROM docker.io/library/alpine:3.23.4
 
 # install kubectl (https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/)
 RUN set -x \
