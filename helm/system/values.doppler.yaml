@@ -38,9 +38,10 @@ traefik:
     kubernetesCRD:
       # in Traefik >=2.5, cross-namespace references for resources like middlewares are restricted by default
       allowCrossNamespace: true
-  logs:
-    general: {format: json} # log in JSON format
-    access: {enabled: false} # disable access logs
+  log:
+    format: json # log in JSON format
+  accessLog:
+    enabled: false # disable access logs
   resources:
     requests: {memory: 256Mi}
     limits: {memory: 1024Mi}
