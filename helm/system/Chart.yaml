@@ -9,8 +9,8 @@ icon: https://avatars.githubusercontent.com/u/110490746
 
 dependencies:
   - name: traefik
-    version: 41.0.1
+    version: 41.4.0
     repository: https://helm.traefik.io/traefik
   - name: external-secrets
-    version: 2.7.0
+    version: 2.10.0
     repository: https://charts.external-secrets.io
